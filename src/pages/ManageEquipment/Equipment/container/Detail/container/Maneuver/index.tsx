@@ -1,19 +1,21 @@
 import DetailTabHeader from '../Common/DetailTabHeader';
 import React, { useState } from 'react';
-import { notification, PaginationProps, Table } from 'tera-dls';
+import { notification, PaginationProps, Table, Tag } from 'tera-dls';
 import ActionCUD from '../../../../../../../_common/component/TableColumnCustom/ActionCUD';
 import PaginationCustom from '../../../../../../../_common/component/PaginationCustom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { filterField, formatNumber } from '../../../../../../../_common/utils';
+import { filterField } from '../../../../../../../_common/utils';
 import { messageError } from '../../../../../../../_common/constants/message';
 import { updateURLQuery } from '../../../../../../System/containers/ManagePage/TableConfig/container/Table';
 import { useNavigate } from 'react-router-dom';
 import { BUTTON_KEY } from '../../../../../../../_common/constants/permission';
-import EquipmentFixApi from '../../_api';
+import { EquipmentManeuverApi } from '../../_api';
 import { IFormEquipmentFix, IFormModel } from '../../interfaces';
-import FormFix from '../Form/FormFix';
 import useConfirm from '../../../../../../../_common/hooks/useConfirm';
-import DetailManeuver from '../Form/FormManeuver';
+import DetailManeuver from '../ModalDetail/DetailManeuver';
+import FormManeuver from '../Form/FormManeuver';
+import { statusConfigColor, statusTextColor } from '../../../../constants';
+import moment from 'moment';
 
 interface IParams {
   page: number;
@@ -37,9 +39,9 @@ function EquipmentDetailManeuver() {
   };
 
   const { data, refetch } = useQuery(
-    ['get-table-equipment-fix-list', params],
+    ['get-table-equipment-maneuver-list', params],
     () =>
-      EquipmentFixApi.getEquipmentFixList({
+      EquipmentManeuverApi.getEquipmentManeuverList({
         params: filterField({ ...params }),
       }),
     {
@@ -78,7 +80,7 @@ function EquipmentDetailManeuver() {
   };
 
   const { mutate: deleteColumn } = useMutation(
-    (id: number | string) => EquipmentFixApi.deleteEquipmentFix(id),
+    (id: number | string) => EquipmentManeuverApi.deleteEquipmentManeuver(id),
     {
       onSuccess(res) {
         if (res?.code === 200) {
@@ -123,71 +125,99 @@ function EquipmentDetailManeuver() {
       },
     },
     {
-      title: <div className="text-xxs">Dự án</div>,
+      title: <div className="text-xxs">Trạng thái</div>,
+      dataIndex: 'status',
+      width: 100,
+      render: (status: string, record) => (
+        <Tag className="w-fit text-xxs" color={statusConfigColor[status]}>
+          <span className={statusTextColor[status] + 'text-xxs'}>
+            {record?.status_text}
+          </span>
+        </Tag>
+      ),
+    },
+    {
+      title: <div className="text-xxs">Chuyển từ</div>,
       dataIndex: '',
-      width: 350,
-      align: 'left',
-      render: (_, record) => {
+      width: 150,
+      render: (text, record) => {
         return (
-          <div className="text-xxs">
-            <span>Mã thiết bị</span>
-            <span>- Tên thiết bị dự án </span>
-            <span>{record?.project?.name}</span>
-          </div>
+          <span className="text-xxs">
+            {record?.old_projects.length > 0
+              ? record?.old_projects[0].name
+              : ''}
+          </span>
         );
       },
     },
     {
-      title: <div className="text-xxs">Nội dung</div>,
-      dataIndex: 'content',
-      width: 200,
-      render: (text) => {
-        return <span className="text-xxs">{text}</span>;
-      },
-    },
-    {
-      title: <div className="text-xxs">Thời gian</div>,
-      dataIndex: 'fixed_at',
-      width: 200,
-      render: (text) => {
-        return <span className="text-xxs">{text}</span>;
-      },
-    },
-    {
-      title: <div className="text-xxs">Đơn vị</div>,
-      dataIndex: 'units',
-      width: 100,
-      render: (text) => {
-        return <span className="text-xxs">{text}</span>;
-      },
-    },
-    {
-      title: <div className="text-xxs">Số lượng</div>,
-      dataIndex: 'quantity',
-      width: 100,
-      render: (text) => {
-        return <span className="text-xxs">{text}</span>;
-      },
-    },
-    {
-      title: <div className="text-xxs">Đơn giá</div>,
-      dataIndex: 'price',
+      title: <div className="text-xxs">Đến</div>,
+      dataIndex: '',
       width: 150,
-      render: (text) => <span className="text-xxs">{formatNumber(text)}</span>,
-    },
-    {
-      title: <div className="text-xxs">VAT(%)</div>,
-      dataIndex: 'vat',
-      width: 80,
-      render: (text) => {
-        return <span className="text-xxs">{text}</span>;
+      render: (text, record) => {
+        return (
+          <span className="text-xxs">
+            {record?.new_projects.length > 0
+              ? record?.new_projects[0].name
+              : ''}
+          </span>
+        );
       },
     },
     {
-      title: <div className="text-xxs">Thành tiền (đ)</div>,
-      dataIndex: 'sum_total',
+      title: <div className="text-xxs">Ngày điều đi</div>,
+      dataIndex: 'started_at',
       width: 150,
-      render: (text) => <span className="text-xxs">{formatNumber(text)}</span>,
+      render: (text, record) => {
+        return (
+          <span className="text-xxs">
+            {record?.started_at
+              ? moment(record?.started_at, 'YYYY-MM-DD HH:mm:ss').format(
+                  'DD/MM/YYYY',
+                )
+              : ''}
+          </span>
+        );
+      },
+    },
+    {
+      title: <div className="text-xxs">Ngày điều đến</div>,
+      dataIndex: 'created_at',
+      width: 150,
+      render: (text, record) => {
+        return (
+          <span className="text-xxs">
+            {record?.created_at
+              ? moment(record?.created_at, 'YYYY-MM-DD HH:mm:ss').format(
+                  'DD/MM/YYYY',
+                )
+              : ''}
+          </span>
+        );
+      },
+    },
+    {
+      title: <div className="text-xxs">Quyết định</div>,
+      dataIndex: 'determine_number',
+      width: 150,
+      render: (text, record) => (
+        <div>
+          <div className="flex items-center">
+            <div className="ml-2">
+              <ul>
+                <li>
+                  <span className="text-green-400 text-xxs">[{text}]</span>
+                </li>
+                <li>
+                  <div className="text-[10px]">
+                    <span className="text-gray-400">{record?.note}</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      ),
     },
     {
       title: '',
@@ -232,9 +262,11 @@ function EquipmentDetailManeuver() {
           />
         )}
         {formModel.open && (
-          <FormFix
+          <FormManeuver
             onRefetch={() =>
-              queryClient.invalidateQueries(['get-table-equipment-fix-list'])
+              queryClient.invalidateQueries([
+                'get-table-equipment-maneuver-list',
+              ])
             }
             id={idColumn}
             open={formModel.open}

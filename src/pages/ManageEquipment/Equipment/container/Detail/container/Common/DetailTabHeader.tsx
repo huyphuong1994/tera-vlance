@@ -18,19 +18,22 @@ function DetailTabHeader({ onClickButtonAdd }: IProps) {
             <EquipmentPageHeader onSearch={handleSearch} />
             <Button
               onClick={onClickButtonAdd}
-              className="rounded-xsm shrink-0 ml-2.5"
+              className="rounded-xsm shrink-0 ml-2.5 py-[5px] px-2.5"
             >
               <div className="flex items-center gap-1 shrink-0">
                 <MagnifyingGlassOutlined className="w-5 h-5" />
-                <span>Tìm kiếm</span>
+                <span className="text-xxs">Tìm kiếm</span>
               </div>
             </Button>
           </div>
           <div>
-            <Button onClick={onClickButtonAdd} className="rounded-xsm shrink-0">
+            <Button
+              onClick={onClickButtonAdd}
+              className="rounded-xsm shrink-0 py-[5px] px-2.5"
+            >
               <div className="flex items-center gap-1 shrink-0">
                 <PlusCircleOutlined className="w-5 h-5" />
-                <span>Thêm mới</span>
+                <span className="text-xxs">Thêm mới</span>
               </div>
             </Button>
           </div>

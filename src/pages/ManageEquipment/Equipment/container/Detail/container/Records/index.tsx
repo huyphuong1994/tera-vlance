@@ -9,11 +9,11 @@ import { messageError } from '../../../../../../../_common/constants/message';
 import { updateURLQuery } from '../../../../../../System/containers/ManagePage/TableConfig/container/Table';
 import { useNavigate } from 'react-router-dom';
 import { BUTTON_KEY } from '../../../../../../../_common/constants/permission';
-import EquipmentFixApi from '../../_api';
+import { EquipmentFixApi } from '../../_api';
 import { IFormEquipmentFix, IFormModel } from '../../interfaces';
 import FormFix from '../Form/FormFix';
 import useConfirm from '../../../../../../../_common/hooks/useConfirm';
-import DetailManeuver from '../Form/FormManeuver';
+import DetailManeuver from '../ModalDetail/DetailManeuver';
 
 interface IParams {
   page: number;

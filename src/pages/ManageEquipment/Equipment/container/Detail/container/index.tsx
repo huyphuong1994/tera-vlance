@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import EquipmentPageApi from '../../../_api';
 import { statusConfigColor, statusTextColor } from '../../../constants';
+import EquipmentDetailDocument from './Document';
 
 function EquipmentPageDetail() {
   const { equipmentId } = useParams();
@@ -142,7 +143,7 @@ function EquipmentPageDetail() {
                 <EquipmentDetailManeuver></EquipmentDetailManeuver>
               )}
               {tab == '3' && (
-                <EquipmentDetailManeuver></EquipmentDetailManeuver>
+                <EquipmentDetailDocument></EquipmentDetailDocument>
               )}
               {tab == '4' && <EquipmentDetailRecords></EquipmentDetailRecords>}
             </div>

@@ -103,8 +103,11 @@ function EquipmentDetailInfo({ equipmentDetail }: IEquipmentDetailProps) {
                     Khấu hao
                   </div>
                   <div className="col-span-5">
-                    {equipmentDetail?.khau_hao
-                      ? equipmentDetail?.khau_hao
+                    {equipmentDetail?.origin_value
+                      ? formatNumber(
+                          equipmentDetail?.origin_value -
+                            equipmentDetail?.remain_value,
+                        )
                       : '-----'}
                   </div>
                 </li>

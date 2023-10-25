@@ -1,19 +1,19 @@
 import DetailTabHeader from '../Common/DetailTabHeader';
 import React, { useState } from 'react';
-import { notification, PaginationProps, Table } from 'tera-dls';
+import { notification, PaginationProps, Table, Tabs } from 'tera-dls';
 import ActionCUD from '../../../../../../../_common/component/TableColumnCustom/ActionCUD';
 import PaginationCustom from '../../../../../../../_common/component/PaginationCustom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { filterField, formatNumber } from '../../../../../../../_common/utils';
+import { filterField } from '../../../../../../../_common/utils';
 import { messageError } from '../../../../../../../_common/constants/message';
 import { updateURLQuery } from '../../../../../../System/containers/ManagePage/TableConfig/container/Table';
 import { useNavigate } from 'react-router-dom';
 import { BUTTON_KEY } from '../../../../../../../_common/constants/permission';
-import EquipmentFixApi from '../../_api';
+import { EquipmentFixApi } from '../../_api';
 import { IFormEquipmentFix, IFormModel } from '../../interfaces';
 import FormFix from '../Form/FormFix';
 import useConfirm from '../../../../../../../_common/hooks/useConfirm';
-import DetailManeuver from '../Form/FormManeuver';
+import DetailManeuver from '../ModalDetail/DetailManeuver';
 
 interface IParams {
   page: number;
@@ -29,6 +29,7 @@ function EquipmentDetailDocument() {
   const [recordDetail, setRecordDetail] = useState<IFormEquipmentFix>();
   const [params, setParams] = useState<IParams>({ page: 1, limit: 10 });
   const [idColumn, setIdColumn] = useState<number | string>(null);
+  const [tab, setTab] = useState<string>('registry');
   const buttonKey = {
     create: BUTTON_KEY.COLUMN_CONFIG_LIST_CREATE,
     update: BUTTON_KEY.COLUMN_CONFIG_LIST_UPDATE,
@@ -114,22 +115,22 @@ function EquipmentDetailDocument() {
 
   const columns: any = [
     {
-      title: 'STT',
+      title: <div className="text-xxs">STT</div>,
       dataIndex: '',
       width: 80,
       fixed: 'center',
       render: (_, record, index) => {
-        return <span>{index + 1}</span>;
+        return <span className="text-xxs">{index + 1}</span>;
       },
     },
     {
-      title: 'Dự án',
+      title: <div className="text-xxs">Ngày bắt đầu</div>,
       dataIndex: '',
-      width: 350,
+      width: 150,
       align: 'left',
       render: (_, record) => {
         return (
-          <div>
+          <div className="text-xxs">
             <span>Mã thiết bị</span>
             <span>- Tên thiết bị dự án </span>
             <span>{record?.project?.name}</span>
@@ -138,46 +139,33 @@ function EquipmentDetailDocument() {
       },
     },
     {
-      title: 'Nội dung',
+      title: <div className="text-xxs">Ngày kết thúc</div>,
       dataIndex: 'content',
-      width: 200,
+      width: 150,
+      render: (text) => {
+        return <span className="text-xxs">{text}</span>;
+      },
     },
     {
-      title: 'Thời gian',
+      title: <div className="text-xxs">Nơi đăng ký</div>,
       dataIndex: 'fixed_at',
-      width: 200,
+      width: 150,
+      render: (text) => {
+        return <span className="text-xxs">{text}</span>;
+      },
     },
     {
-      title: 'Đơn vị',
+      title: <div className="text-xxs">Ghi chú</div>,
       dataIndex: 'units',
-      width: 100,
-    },
-    {
-      title: 'Số lượng',
-      dataIndex: 'quantity',
-      width: 100,
-    },
-    {
-      title: 'Đơn giá',
-      dataIndex: 'price',
       width: 150,
-      render: (text) => formatNumber(text),
-    },
-    {
-      title: 'VAT(%)',
-      dataIndex: 'vat',
-      width: 80,
-    },
-    {
-      title: 'Thành tiền (đ)',
-      dataIndex: 'sum_total',
-      width: 150,
-      render: (text) => formatNumber(text),
+      render: (text) => {
+        return <span className="text-xxs">{text}</span>;
+      },
     },
     {
       title: '',
       dataIndex: 'action',
-      width: 100,
+      width: 120,
       fixed: 'right',
       render: (_, record) => {
         return (
@@ -194,27 +182,52 @@ function EquipmentDetailDocument() {
     },
   ];
 
+  const tabs = [
+    {
+      key: 'registry',
+      label: <div className="text-xxs uppercase">Thông tin đăng kiểm</div>,
+    },
+    {
+      key: 'insurance',
+      label: <div className="text-xxs uppercase">Thông tin bảo hành</div>,
+    },
+  ];
+
+  const handleChangeTabs = (key: string): void => setTab(key);
+
   return (
     <>
       <DetailTabHeader
         onClickButtonAdd={() => setFormModel({ open: true })}
       ></DetailTabHeader>
       <div className="mt-5">
-        <Table
-          columns={columns}
-          data={data?.data?.data || []}
-          rowKey={(record: any) => record?.id}
-          // loading={isLoading}
+        <Tabs
+          activeKey={tab}
+          className="mb-0"
+          items={tabs}
+          onChange={handleChangeTabs}
         />
-        {data?.data?.total > 0 && (
-          <PaginationCustom
-            onChange={handleChangePage}
-            total={data?.data?.total || 0}
-            current={data?.data?.current_page || 1}
-            pageSize={data?.data?.per_page}
-            to={data?.data?.to}
-            from={data?.data?.from}
-          />
+        {tab == 'registry' ? (
+          <>
+            <Table
+              columns={columns}
+              data={data?.data?.data || []}
+              rowKey={(record: any) => record?.id}
+              // loading={isLoading}
+            />
+            {data?.data?.total > 0 && (
+              <PaginationCustom
+                onChange={handleChangePage}
+                total={data?.data?.total || 0}
+                current={data?.data?.current_page || 1}
+                pageSize={data?.data?.per_page}
+                to={data?.data?.to}
+                from={data?.data?.from}
+              />
+            )}
+          </>
+        ) : (
+          <></>
         )}
         {formModel.open && (
           <FormFix

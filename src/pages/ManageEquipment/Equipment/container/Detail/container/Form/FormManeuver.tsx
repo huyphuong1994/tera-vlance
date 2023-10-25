@@ -1,42 +1,301 @@
-import { IFormEquipmentManeuver } from '../../interfaces';
-import { Modal } from 'tera-dls';
+import {
+  DatePicker,
+  Form,
+  FormItem,
+  Input,
+  Modal,
+  notification,
+  Spin,
+  TextArea,
+} from 'tera-dls';
+import { Controller, useForm } from 'react-hook-form';
+import moment from 'moment/moment';
+import React, { useEffect } from 'react';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { IFormEquipmentFix } from '../../interfaces';
+import useConfirm from '../../../../../../../_common/hooks/useConfirm';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  messageError,
+  messageWarning,
+} from '../../../../../../../_common/constants/message';
+import { EquipmentFixApi, EquipmentManeuverApi } from '../../_api';
+import { HrmApi } from '../../../../../../../_common/dof/_api';
+import { useParams } from 'react-router-dom';
+import UploadPdf from '../../../../../../../_common/component/UploadPdf';
+import SelectFieldConfig from '../../../../../../../_common/dof/Select/SelectFieldConfig';
 
-interface IDetailManeuverProps {
+interface IProps {
+  id?: string | number;
   open: boolean;
   onClose: () => void;
-  detailInfo: IFormEquipmentManeuver;
+  onRefetch: () => void;
 }
 
-function DetailManeuver(props: IDetailManeuverProps) {
-  const { open, onClose, detailInfo } = props;
+const schema = yup.object().shape({
+  equipment_id: yup.number().required('Vui lòng nhập trường này!'),
+  fixed_at: yup.string().required('Vui lòng nhập trường này!'),
+  payment_at: yup.string(),
+  user_follow: yup.number().required('Vui lòng nhập trường này!'),
+  location: yup.string(),
+  quantity: yup.number().required('Vui lòng nhập trường này!'),
+  vat: yup
+    .number()
+    .min(0, 'Giá trị từ chỉ từ 0-100!')
+    .max(100, 'Giá trị từ chỉ từ 0-100!'),
+  units: yup.string(),
+  price: yup.number().required('Vui lòng nhập trường này!'),
+  content: yup
+    .string()
+    .required('Vui lòng nhập trường này!')
+    .max(500, 'Không nhập quá 191 ký tự!'),
+});
 
-  const handleCloseModal = () => {
+function FormManeuver(props: IProps) {
+  const confirm = useConfirm();
+  const { equipmentId } = useParams();
+  const { open = false, id, onClose, onRefetch } = props;
+  const {
+    register,
+    control,
+    reset,
+    setValue,
+    // watch,
+    handleSubmit,
+    formState: { errors, isDirty },
+  } = useForm<IFormEquipmentFix>({
+    resolver: yupResolver<IFormEquipmentFix>(schema),
+    mode: 'onChange',
+    defaultValues: {
+      equipment_id: +equipmentId,
+      fixed_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+      payment_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+    },
+  });
+
+  const {
+    data: detailColumn,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery(
+    ['get-detail-column-equipment-maneuver', id],
+    () => EquipmentManeuverApi.getEquipmentManeuverDetail(id),
+    {
+      enabled: !!id,
+      cacheTime: 300000,
+      staleTime: 300000,
+    },
+  );
+
+  const handleClose = (): void => {
+    reset();
     onClose();
   };
+
+  const { mutate: submitForm, isLoading: loadingSubmit } = useMutation(
+    (variable: IFormEquipmentFix) => {
+      if (id) return EquipmentFixApi.updateEquipmentFix(variable, id);
+      return EquipmentFixApi.createEquipmentFix(variable);
+    },
+    {
+      onSuccess: (res) => {
+        if (res?.code === 200) {
+          onRefetch();
+          handleClose();
+          notification.success({
+            message: res?.msg,
+          });
+        }
+      },
+      onError: (error: any) => {
+        const errorMessage = error?.data?.msg || messageError.ERROR_API;
+        notification.error({
+          message: errorMessage,
+        });
+      },
+    },
+  );
+
+  const handleCloseConfirm = () => {
+    if (loadingSubmit) return;
+    if (isDirty) {
+      confirm.warning({
+        title: 'Thoát bản ghi',
+        content: (
+          <>
+            <p>{messageWarning.WARNING_EXIT_1}</p>
+            <p>{messageWarning.WARNING_EXIT_2}</p>
+          </>
+        ),
+        className: 'modal-button-center',
+        onOk: () => {
+          handleClose();
+        },
+      });
+    } else {
+      handleClose();
+    }
+  };
+
+  const { data: listEmployee } = useQuery(
+    ['get-employee'],
+    () =>
+      HrmApi.getListEmployee({
+        page: 1,
+        limit: 10,
+      }),
+    {
+      staleTime: 300000,
+      cacheTime: 300000,
+    },
+  );
+
+  const listOptionEmployee = listEmployee?.data?.data?.map((item) => {
+    return {
+      label: item.full_name,
+      value: item.id,
+    };
+  });
+
+  console.log('1', listOptionEmployee);
+
+  const handleSubmitForm = (values: IFormEquipmentFix): void => {
+    if (loadingSubmit) return;
+    submitForm(values);
+  };
+
+  useEffect(() => {
+    if (detailColumn && id) {
+      Object.entries(detailColumn).forEach(
+        ([fieldName, fieldValue]: [any, any]) => {
+          setValue(fieldName, fieldValue);
+        },
+      );
+    }
+  }, [detailColumn, id]);
+
+  useEffect(() => {
+    if (id) refetch();
+  }, [id]);
+
+  if (isError) {
+    onClose();
+  }
 
   return (
     <>
       <Modal
         centered={true}
-        title={'CHI TIẾT SỬA CHỮA'}
+        title={id ? 'SỬA ĐIỀU ĐỘNG THIẾT BỊ' : 'THÊM ĐIỀU ĐỘNG THIẾT BỊ'}
         open={open}
-        width={1000}
+        width={'90%'}
         closeIcon={false}
-        cancelText="Đóng"
-        okButtonProps={{ className: 'hidden' }}
-        onCancel={handleCloseModal}
+        okText="Lưu"
+        cancelText="Huỷ"
+        onOk={() => handleSubmit(handleSubmitForm)()}
+        onCancel={handleCloseConfirm}
+        confirmLoading={(isLoading && !!id) || loadingSubmit}
       >
-        <div className="">
-          <ul className="">
-            <li>
-              <div>Tên thiết bị</div>
-              <div>{detailInfo.content}</div>
-            </li>
-          </ul>
-        </div>
+        <Spin spinning={isLoading && !!id}>
+          <Form onSubmit={handleSubmit(handleSubmitForm)}>
+            <div className="grid grid-cols-6 gap-x-8">
+              <div className="col-span-4">
+                <UploadPdf
+                  onReceiveImages={() => ''}
+                  object_key={''}
+                  folder={''}
+                />
+              </div>
+              <div className="col-span-2">
+                <FormItem
+                  className="mb-5"
+                  label="Chuyển đến dự án"
+                  isError={!!errors?.fixed_at}
+                  messages={errors?.fixed_at?.message as string}
+                >
+                  <Controller
+                    name="fixed_at"
+                    control={control}
+                    render={() => {
+                      return <SelectFieldConfig></SelectFieldConfig>;
+                    }}
+                  />
+                </FormItem>
+                <FormItem
+                  isRequired={false}
+                  className="mb-5"
+                  label="Số quyết định"
+                  isError={!!errors?.location}
+                  messages={errors?.location?.message as string}
+                >
+                  <Input
+                    {...register('location')}
+                    placeholder="Vui lòng nhập"
+                    className="w-full"
+                  />
+                </FormItem>
+                <FormItem
+                  isRequired={false}
+                  className="mb-5"
+                  label="Ngày chuyển đi"
+                  isError={!!errors?.payment_at}
+                  messages={errors?.payment_at?.message as string}
+                >
+                  <Controller
+                    name="payment_at"
+                    control={control}
+                    render={({ field }) => {
+                      return (
+                        <DatePicker
+                          format={'YYYY-MM-DD HH:mm:ss'}
+                          value={moment(field.value, 'YYYY-MM-DD HH:mm:ss')}
+                        />
+                      );
+                    }}
+                  />
+                </FormItem>
+                <FormItem
+                  isRequired={false}
+                  className="mb-5"
+                  label="Ngày chuyển đến"
+                  isError={!!errors?.payment_at}
+                  messages={errors?.payment_at?.message as string}
+                >
+                  <Controller
+                    name="payment_at"
+                    control={control}
+                    render={({ field }) => {
+                      return (
+                        <DatePicker
+                          format={'YYYY-MM-DD HH:mm:ss'}
+                          value={moment(field.value, 'YYYY-MM-DD HH:mm:ss')}
+                        />
+                      );
+                    }}
+                  />
+                </FormItem>
+                <FormItem
+                  className="mb-5"
+                  label="Ghi chú"
+                  isError={!!errors?.content}
+                  messages={errors?.content?.message as string}
+                >
+                  <TextArea
+                    rows={22}
+                    style={{ resize: 'none' }}
+                    placeholder="Vui lòng nhập"
+                    {...register('content')}
+                  />
+                </FormItem>
+              </div>
+            </div>
+          </Form>
+        </Spin>
       </Modal>
     </>
   );
 }
 
-export default DetailManeuver;
+export default FormManeuver;

@@ -9,11 +9,11 @@ import { messageError } from '../../../../../../../_common/constants/message';
 import { updateURLQuery } from '../../../../../../System/containers/ManagePage/TableConfig/container/Table';
 import { useNavigate } from 'react-router-dom';
 import { BUTTON_KEY } from '../../../../../../../_common/constants/permission';
-import EquipmentFixApi from '../../_api';
+import { EquipmentFixApi } from '../../_api';
 import { IFormEquipmentFix, IFormModel } from '../../interfaces';
 import FormFix from '../Form/FormFix';
 import useConfirm from '../../../../../../../_common/hooks/useConfirm';
-import DetailFix from '../Form/DetailFix';
+import DetailFix from '../ModalDetail/DetailFix';
 
 interface IParams {
   page: number;
@@ -191,7 +191,7 @@ function EquipmentDetailFix() {
     {
       title: '',
       dataIndex: 'action',
-      width: 100,
+      width: 120,
       fixed: 'right',
       render: (_, record) => {
         return (

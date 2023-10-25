@@ -22,7 +22,7 @@ import {
   messageError,
   messageWarning,
 } from '../../../../../../../_common/constants/message';
-import EquipmentFixApi from '../../_api';
+import { EquipmentFixApi } from '../../_api';
 import { HrmApi } from '../../../../../../../_common/dof/_api';
 import { useParams } from 'react-router-dom';
 
@@ -81,7 +81,7 @@ function FormFix(props: IProps) {
     refetch,
   } = useQuery(
     ['get-detail-column-equipment', id],
-    () => EquipmentFixApi.getEquipmentFix(id),
+    () => EquipmentFixApi.getEquipmentFixDetail(id),
     {
       enabled: !!id,
       cacheTime: 300000,
@@ -96,6 +96,7 @@ function FormFix(props: IProps) {
 
   const { mutate: submitForm, isLoading: loadingSubmit } = useMutation(
     (variable: IFormEquipmentFix) => {
+      if (id) return EquipmentFixApi.updateEquipmentFix(variable, id);
       return EquipmentFixApi.createEquipmentFix(variable);
     },
     {

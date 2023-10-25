@@ -1,13 +1,13 @@
-import { IFormEquipmentFix } from '../../interfaces';
+import { IFormEquipmentManeuver } from '../../interfaces';
 import { Modal } from 'tera-dls';
 
-interface IDetailFixProps {
+interface IDetailManeuverProps {
   open: boolean;
   onClose: () => void;
-  detailInfo: IFormEquipmentFix;
+  detailInfo: IFormEquipmentManeuver;
 }
 
-function DetailFix(props: IDetailFixProps) {
+function DetailManeuver(props: IDetailManeuverProps) {
   const { open, onClose, detailInfo } = props;
 
   const handleCloseModal = () => {
@@ -39,4 +39,4 @@ function DetailFix(props: IDetailFixProps) {
   );
 }
 
-export default DetailFix;
+export default DetailManeuver;

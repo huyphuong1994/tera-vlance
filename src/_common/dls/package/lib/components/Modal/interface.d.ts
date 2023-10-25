@@ -14,9 +14,9 @@ export interface ModalProps {
     /** Specify a function that will be called when a user clicks mask, close button on top right or Cancel button */
     onCancel?: (e: React.MouseEvent<HTMLButtonElement>) => void;
     afterClose?: () => void;
-    /** Callback when the animation ends when Modal is turned on and off */
+    /** Callback when the animation ends when ModalDetail is turned on and off */
     afterOpenChange?: (open: boolean) => void;
-    /** Centered Modal */
+    /** Centered ModalDetail */
     centered?: boolean;
     /** Width of the modal dialog */
     width?: string | number;
@@ -30,7 +30,7 @@ export interface ModalProps {
     cancelText?: React.ReactNode;
     /** Whether to close the modal dialog when the mask (area outside the modal) is clicked */
     maskClosable?: boolean;
-    /** Force render Modal */
+    /** Force render ModalDetail */
     forceRender?: boolean;
     okButtonProps?: ButtonProps;
     cancelButtonProps?: ButtonProps;

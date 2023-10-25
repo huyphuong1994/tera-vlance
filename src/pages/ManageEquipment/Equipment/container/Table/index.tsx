@@ -13,6 +13,7 @@ import PaginationCustom from '../../../../../_common/component/PaginationCustom'
 import EquipmentForm from '../Form';
 import useConfirm from '../../../../../_common/hooks/useConfirm';
 import { EQUIPMENT_PAGE_URL } from '../../../../../_common/constants/url';
+import moment from 'moment';
 
 interface IParams {
   page: number;
@@ -178,11 +179,25 @@ const TableEquipment = (props: ITableEquipmentProps) => {
             <ul className="text-xxs">
               <li className="mb-[5px]">
                 <span className="text-gray-400 text-xxs">Chờ việc: </span>
-                <span>{record?.wait_work_at}</span>
+                <span>
+                  {record?.wait_work_at
+                    ? moment(
+                        record?.wait_work_at,
+                        'YYYY-MM-DD HH:mm:ss',
+                      ).format('DD/MM/YYYY')
+                    : ''}
+                </span>
               </li>
               <li className="mb-[5px]">
                 <span className="text-gray-400 text-xxs">Trả máy: </span>
-                <span>{record?.return_expected_at}</span>
+                <span>
+                  {record?.return_expected_at
+                    ? moment(
+                        record?.return_expected_at,
+                        'YYYY-MM-DD HH:mm:ss',
+                      ).format('DD/MM/YYYY')
+                    : ''}
+                </span>
               </li>
             </ul>
           </div>
