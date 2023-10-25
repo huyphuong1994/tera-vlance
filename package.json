@@ -11,7 +11,7 @@
   "scripts": {
     "start": "set PORT=3007 && react-scripts start",
     "dev": "webpack-dev-server --config ./webpack.config.js --mode development",
-    "build": "build.sh && react-scripts build",
+    "build": "react-scripts build",
     "dls": "rm -rf node_modules/tera-dls package-lock.json && npm i",
     "fix-eslint": "eslint --fix --ext .js,.jsx,ts,tsx .",
     "reinstall": "rm -rf package-lock.json && rm -rf node_modules && npm cache clean --force && npm install"
