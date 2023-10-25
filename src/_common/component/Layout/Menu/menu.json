@@ -1,0 +1,92 @@
+{
+  "groupMenu": [
+    {
+      "id": "r1",
+      "title": "Trang chủ",
+      "path": "/crm/product-management/list",
+      "icon": "home",
+      "key": "crm"
+    },
+    {
+      "id": "r2",
+      "title": "Danh sách thiết bị",
+      "path": "/equipment/list",
+      "icon": "folder",
+      "key": "equipment"
+    },
+    {
+      "id": "r3",
+      "title": "Quản lý vật tư",
+      "path": "/material/list",
+      "icon": "wrench",
+      "key": "material"
+    }
+  ],
+  "parentMenu": [
+    {
+      "id": 1,
+      "title": "Danh sách thiết bị",
+      "path": "/equipment/list",
+      "icon": "circle-stack",
+      "key": "list",
+      "parentKey": "equipment"
+    },
+    {
+      "id": 2,
+      "title": "Nhóm thiết bị",
+      "path": "/equipment/category",
+      "icon": "square-3-stack-3d",
+      "key": "category",
+      "parentKey": "equipment"
+    },
+    {
+      "id": 3,
+      "title": "Điều động",
+      "path": "/equipment/maneuver",
+      "icon": "clipboard-document-list",
+      "key": "maneuver",
+      "parentKey": "equipment"
+    },
+    {
+      "id": 4,
+      "title": "Sửa chữa",
+      "path": "/equipment/fix",
+      "icon": "cog",
+      "key": "fix",
+      "parentKey": "equipment"
+    },
+    {
+      "id": 5,
+      "title": "Danh sách vật tư",
+      "path": "/material/list",
+      "icon": "circle-stack",
+      "key": "list",
+      "parentKey": "material"
+    },
+    {
+      "id": 6,
+      "title": "Nhóm vật tư",
+      "path": "/material/category",
+      "icon": "square-3-stack-3d",
+      "key": "category",
+      "parentKey": "material"
+    },
+    {
+      "id": 7,
+      "title": "Điều động",
+      "path": "/material/maneuver",
+      "icon": "clipboard-document-list",
+      "key": "maneuver",
+      "parentKey": "material"
+    },
+    {
+      "id": 8,
+      "title": "Báo cáo",
+      "path": "/material/report",
+      "icon": "cog",
+      "key": "report",
+      "parentKey": "material"
+    }
+  ],
+  "subMenu": []
+}

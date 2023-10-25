@@ -1,0 +1,235 @@
+.tera-page-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+
+  .page-header {
+    padding: 15px 10px;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    flex-direction: column;
+    align-items: initial;
+    @include respond('tablet') {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    &__breadcrumb {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    &__function {
+      display: flex;
+      gap: 10px;
+    }
+
+    &-btn {
+      padding-block: 5px;
+    }
+  }
+
+  .page-content {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    flex: 1;
+  }
+}
+
+.page-breadcrumb {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.modal-fullscreen {
+  width: 100vw !important;
+
+  &.tera-modal {
+    margin: 0 !important;
+
+    .tera-modal-content {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+      border-radius: 0;
+
+      .tera-modal-header {
+        flex-shrink: 0;
+      }
+      .tera-modal-body {
+        overflow: hidden;
+        flex: 1;
+      }
+      .tera-modal-footer {
+        flex-shrink: 0;
+      }
+    }
+  }
+}
+
+.modal-preview {
+  width: 90vw !important;
+  &.tera-modal {
+    margin: 0 !important;
+
+    .tera-modal-content {
+      display: flex;
+      flex-direction: column;
+      height: 90vh;
+      width: 90vw;
+      border-radius: 0;
+    }
+
+    .tera-modal-body {
+      flex: 1;
+      padding: 10px !important;
+      overflow: auto;
+    }
+  }
+
+  &__body {
+    overflow: hidden;
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: auto;
+      height: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: flex;
+      margin: auto;
+    }
+
+    iframe,
+    object {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+
+.modal-confirm {
+  .tera-modal-footer {
+    justify-content: center;
+  }
+}
+
+.tab-table {
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 13px;
+  display: flex;
+  column-gap: 10px;
+  align-items: center;
+}
+
+.tab-count {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 10px;
+  font-weight: 400;
+  border-radius: 50%;
+  background-color: #bcf0da;
+  color: #3f83f8;
+}
+
+.detail-key {
+  font-weight: 700;
+  min-width: 170px;
+  max-width: 170px;
+  font-size: 13px;
+  line-height: 20px;
+  color: #111827;
+
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.detail-value {
+  font-size: 13px;
+  line-height: 20px;
+  color: #111827;
+
+  max-height: 100px;
+  overflow-y: scroll;
+  word-break: break-word;
+
+  &-more {
+    font-size: 14px;
+    line-height: 20px;
+    color: #111827;
+  }
+}
+
+.text-custom-table {
+  p {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .detail-responsive {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      'item1 item5 '
+      'item4 item3 '
+      'item7 item8'
+      'item10 item6'
+      'item2 item9'
+      'item11 item12';
+
+    @for $i from 1 through 12 {
+      .item#{$i} {
+        grid-area: item#{$i};
+      }
+    }
+  }
+ }
+
+ .purchase-table-detail{
+    table{
+      width: 100%;
+      border-collapse:collapse;
+    }
+    tr, td{
+      border: 1px solid rgba(227, 227, 227, 0.758)
+    }
+    td{
+      padding: 0.625rem;
+      min-width: 150px;
+      word-break: break-all;
+    }
+    .title{
+      background-color: rgb(249 250 251);
+      font-weight: 600;
+      width: 150px;
+    }
+ }
