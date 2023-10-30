@@ -13,9 +13,9 @@ import { EquipmentManeuverApi } from '../../_api';
 import { IFormEquipmentFix, IFormModel } from '../../interfaces';
 import useConfirm from '../../../../../../../_common/hooks/useConfirm';
 import DetailManeuver from '../ModalDetail/DetailManeuver';
-import FormManeuver from '../Form/FormManeuver';
 import { statusConfigColor, statusTextColor } from '../../../../constants';
 import moment from 'moment';
+import FormManeuver from 'pages/ManageEquipment/Common/Container/FormManeuver';
 
 interface IParams {
   page: number;

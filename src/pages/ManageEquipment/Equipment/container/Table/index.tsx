@@ -6,7 +6,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { filterField } from '../../../../../_common/utils';
 import { messageError } from '../../../../../_common/constants/message';
 import EquipmentPageApi from '../../_api';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { updateURLQuery } from '../../../../System/containers/ManagePage/TableConfig/container/Table';
 import { useNavigate } from 'react-router-dom';
 import PaginationCustom from '../../../../../_common/component/PaginationCustom';
@@ -113,6 +113,9 @@ const TableEquipment = (props: ITableEquipmentProps) => {
       dataIndex: 'record_number',
       width: 80,
       fixed: 'center',
+      render: (text) => {
+        return <span className="text-xxs">{text}</span>;
+      },
     },
     {
       title: <div className="text-xxs">Thiết bị</div>,

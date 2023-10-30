@@ -4,14 +4,14 @@ import { BUTTON_KEY } from '../../../../../_common/constants/permission';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { filterField } from '../../../../../_common/utils';
 import { messageError } from '../../../../../_common/constants/message';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { updateURLQuery } from '../../../../System/containers/ManagePage/TableConfig/container/Table';
 import { useNavigate } from 'react-router-dom';
 import PaginationCustom from '../../../../../_common/component/PaginationCustom';
 import useConfirm from '../../../../../_common/hooks/useConfirm';
 import { EQUIPMENT_PAGE_URL } from '../../../../../_common/constants/url';
 import ManeuverPageApi from '../../_api';
-import ManeuverForm from '../Form';
+import FormManeuver from '../../../Common/Container/FormManeuver';
 
 interface IParams {
   page: number;
@@ -107,7 +107,7 @@ const TableManeuver = (props: ITableManeuverProps) => {
 
   const columns: any = [
     {
-      title: 'STT',
+      title: <div className="text-xxs">STT</div>,
       dataIndex: 'record_number',
       width: 80,
       fixed: 'center',
@@ -116,7 +116,7 @@ const TableManeuver = (props: ITableManeuverProps) => {
       },
     },
     {
-      title: 'Thiết bị',
+      title: <div className="text-xxs">Thiết bị</div>,
       dataIndex: 'code',
       width: 350,
       align: 'left',
@@ -140,12 +140,15 @@ const TableManeuver = (props: ITableManeuverProps) => {
       },
     },
     {
-      title: 'Số quyết định',
+      title: <div className="text-xxs">Số quyết định</div>,
       dataIndex: 'determine_number',
       width: 200,
+      render: (text) => {
+        return <span className="text-xxs">{text}</span>;
+      },
     },
     {
-      title: 'Dự án đang thực hiện',
+      title: <div className="text-xxs">Dự án đang thực hiện</div>,
       dataIndex: 'total',
       width: 200,
       render: (_, record) => {
@@ -168,19 +171,25 @@ const TableManeuver = (props: ITableManeuverProps) => {
       },
     },
     {
-      title: 'Ngày chuyển đi',
+      title: <div className="text-xxs">Ngày chuyển đi</div>,
       dataIndex: '',
       width: 200,
+      render: () => {
+        return <span className="text-xxs"></span>;
+      },
     },
     {
       title: <div className="text-xxs">Ngày chuyển đến</div>,
       dataIndex: '',
       width: 200,
+      render: () => {
+        return <span className="text-xxs"></span>;
+      },
     },
     {
       title: '',
       dataIndex: 'action',
-      width: 80,
+      width: 120,
       fixed: 'right',
       render: (_, record) => {
         return (
@@ -232,7 +241,7 @@ const TableManeuver = (props: ITableManeuverProps) => {
         />
       )}
       {isOpenForm && (
-        <ManeuverForm
+        <FormManeuver
           onRefetch={refetch}
           id={idColumn}
           open={isOpenForm}

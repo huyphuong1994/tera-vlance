@@ -32,6 +32,7 @@ const schema = yup.object().shape({
     .trim()
     .max(191, 'Không nhập quá 191 ký tự!')
     .matches(REGEX.CODE, 'Mã thiết bị không dấu và chỉ chứa kí tự "_"'),
+  total: yup.number(),
 });
 
 const CategoryForm = (props: IProps) => {

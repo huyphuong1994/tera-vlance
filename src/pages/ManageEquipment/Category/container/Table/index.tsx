@@ -4,14 +4,15 @@ import { BUTTON_KEY } from '../../../../../_common/constants/permission';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { filterField } from '../../../../../_common/utils';
 import { messageError } from '../../../../../_common/constants/message';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { updateURLQuery } from '../../../../System/containers/ManagePage/TableConfig/container/Table';
 import { useNavigate } from 'react-router-dom';
 import PaginationCustom from '../../../../../_common/component/PaginationCustom';
 import useConfirm from '../../../../../_common/hooks/useConfirm';
-import { EQUIPMENT_PAGE_URL } from '../../../../../_common/constants/url';
 import CategoryPageApi from '../../_api';
 import CategoryForm from '../Form';
+import DetailCategory from '../ModalDetail/ModalDetail';
+import { IFormCategory } from '../../interfaces';
 
 interface IParams {
   page: number;
@@ -30,6 +31,8 @@ const TableCategory = (props: ITableCategoryProps) => {
   const [params, setParams] = useState<IParams>({ page: 1, limit: 10 });
   const [idColumn, setIdColumn] = useState<number | string>(null);
   const [isOpenForm, setIsOpenForm] = useState<boolean>(false);
+  const [openDetail, setOpenDetail] = useState<boolean>(false);
+  const [recordDetail, setRecordDetail] = useState<IFormCategory>();
 
   const buttonKey = {
     create: BUTTON_KEY.COLUMN_CONFIG_LIST_CREATE,
@@ -79,10 +82,9 @@ const TableCategory = (props: ITableCategoryProps) => {
     },
   );
 
-  const handleDetail = (id: number) => {
-    setIsOpenForm(true);
-    setIdColumn(id);
-    navigate(`${EQUIPMENT_PAGE_URL.detail.path}/${id}`);
+  const handleDetail = (record: IFormCategory) => {
+    setOpenDetail(true);
+    setRecordDetail(record);
   };
 
   const handleUpdate = (id: number) => {
@@ -107,29 +109,42 @@ const TableCategory = (props: ITableCategoryProps) => {
 
   const columns: any = [
     {
-      title: 'STT',
+      title: <div className="text-xxs">STT</div>,
       dataIndex: 'record_number',
       width: 80,
       fixed: 'center',
       render: (_, record, index) => {
-        return <span>{index + (params.page - 1) * params.limit + 1}</span>;
+        return (
+          <span className="text-xxs">
+            {index + (params.page - 1) * params.limit + 1}
+          </span>
+        );
       },
     },
     {
-      title: 'Mã nhóm',
+      title: <div className="text-xxs">Mã nhóm</div>,
       dataIndex: 'code',
       width: 350,
       align: 'left',
+      render: (text) => {
+        return <span className="text-xxs">{text}</span>;
+      },
     },
     {
-      title: 'Tên nhóm',
+      title: <div className="text-xxs">Tên nhóm</div>,
       dataIndex: 'title',
       width: 200,
+      render: (text) => {
+        return <span className="text-xxs">{text}</span>;
+      },
     },
     {
-      title: 'Số thiết bị có trong nhóm',
+      title: <div className="text-xxs">Số thiết bị có trong nhóm</div>,
       dataIndex: 'total',
       width: 200,
+      render: (text) => {
+        return <span className="text-xxs">{text}</span>;
+      },
     },
     {
       title: '',
@@ -141,7 +156,7 @@ const TableCategory = (props: ITableCategoryProps) => {
           <>
             <ActionCUD
               buttonKey={buttonKey}
-              onClickDetail={() => handleDetail(record?.id)}
+              onClickDetail={() => handleDetail(record)}
               onClickUpdate={() => handleUpdate(record?.id)}
               onClickDelete={() => handleDelete(record?.id, record?.name)}
             ></ActionCUD>
@@ -191,6 +206,13 @@ const TableCategory = (props: ITableCategoryProps) => {
           id={idColumn}
           open={isOpenForm}
           onClose={() => setIsOpenForm(false)}
+        />
+      )}
+      {openDetail && (
+        <DetailCategory
+          open={openDetail}
+          onClose={() => setOpenDetail(false)}
+          detailInfo={recordDetail}
         />
       )}
     </>

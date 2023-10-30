@@ -1,6 +1,6 @@
 import { endpoint } from '../../../../_common/constants/common';
 import api from '../../../../states/drivers';
-import { IFormManeuver } from '../interfaces';
+import { IFormManeuverItem } from '../interfaces';
 
 const ManeuverApi = `${endpoint}/eqp/project`;
 
@@ -17,11 +17,11 @@ export const ManeuverPageApi = {
     await api
       .delete(`${ManeuverApi}/delete/${id}`)
       .then((result) => result.data),
-  createManeuver: async (param: IFormManeuver) =>
+  createManeuver: async (param: IFormManeuverItem) =>
     await api
       .post(`${ManeuverApi}/create`, param)
       .then((result) => result.data),
-  updateManeuver: async (param: IFormManeuver, id: number) =>
+  updateManeuver: async (param: IFormManeuverItem, id: number | string) =>
     await api
       .put(`${ManeuverApi}/update/${id}`, param)
       .then((result) => result.data),

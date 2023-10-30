@@ -3,8 +3,8 @@ import { BUTTON_KEY } from '../../../_common/constants/permission';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import ManeuverPageHeader from './container/Header';
-import ManeuverForm from './container/Form';
 import TableManeuver from './container/Table';
+import FormManeuver from '../Common/Container/FormManeuver';
 
 function EquipmentManeuver() {
   const queryClient = useQueryClient();
@@ -28,14 +28,14 @@ function EquipmentManeuver() {
         <TableManeuver keyword={keyword} />
       </div>
       {formModel && (
-        <ManeuverForm
+        <FormManeuver
           onRefetch={() =>
             queryClient.invalidateQueries(['get-table-category-list'])
           }
           id={null}
           open={formModel}
           onClose={() => setFormModel(false)}
-        ></ManeuverForm>
+        ></FormManeuver>
       )}
     </>
   );

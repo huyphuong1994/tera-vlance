@@ -13,18 +13,18 @@ import moment from 'moment/moment';
 import React, { useEffect } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { IFormEquipmentFix } from '../../interfaces';
-import useConfirm from '../../../../../../../_common/hooks/useConfirm';
+import useConfirm from '../../../../_common/hooks/useConfirm';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   messageError,
   messageWarning,
-} from '../../../../../../../_common/constants/message';
-import { EquipmentFixApi, EquipmentManeuverApi } from '../../_api';
-import { HrmApi } from '../../../../../../../_common/dof/_api';
-import { useParams } from 'react-router-dom';
-import UploadPdf from '../../../../../../../_common/component/UploadPdf';
-import SelectFieldConfig from '../../../../../../../_common/dof/Select/SelectFieldConfig';
+} from '../../../../_common/constants/message';
+import ManeuverPageApi from '../../Maneuver/_api';
+import { HrmApi } from '../../../../_common/dof/_api';
+// import { useParams } from 'react-router-dom';
+import UploadPdf from '../../../../_common/component/UploadPdf';
+import SelectFieldConfig from '../../../../_common/dof/Select/SelectFieldConfig';
+import { IFormManeuverItem } from '../../Maneuver/interfaces';
 
 interface IProps {
   id?: string | number;
@@ -34,27 +34,25 @@ interface IProps {
 }
 
 const schema = yup.object().shape({
-  equipment_id: yup.number().required('Vui lòng nhập trường này!'),
-  fixed_at: yup.string().required('Vui lòng nhập trường này!'),
-  payment_at: yup.string(),
-  user_follow: yup.number().required('Vui lòng nhập trường này!'),
-  location: yup.string(),
-  quantity: yup.number().required('Vui lòng nhập trường này!'),
-  vat: yup
-    .number()
-    .min(0, 'Giá trị từ chỉ từ 0-100!')
-    .max(100, 'Giá trị từ chỉ từ 0-100!'),
-  units: yup.string(),
-  price: yup.number().required('Vui lòng nhập trường này!'),
-  content: yup
+  project_id: yup.number().required('Vui lòng nhập trường này!'),
+  equipment_id: yup.array().required('Vui lòng nhập trường này!'),
+  file_upload: yup.object().shape({
+    id: yup.number(),
+    name: yup.string(),
+    url: yup.string(),
+  }),
+  determine_number: yup.string().required('Vui lòng nhập trường này!'),
+  started_at: yup.string(),
+  assigned_at: yup.string(),
+  note: yup
     .string()
     .required('Vui lòng nhập trường này!')
-    .max(500, 'Không nhập quá 191 ký tự!'),
+    .max(500, 'Không nhập quá 500 ký tự!'),
 });
 
 function FormManeuver(props: IProps) {
   const confirm = useConfirm();
-  const { equipmentId } = useParams();
+  // const { equipmentId } = useParams();
   const { open = false, id, onClose, onRefetch } = props;
   const {
     register,
@@ -64,14 +62,9 @@ function FormManeuver(props: IProps) {
     // watch,
     handleSubmit,
     formState: { errors, isDirty },
-  } = useForm<IFormEquipmentFix>({
-    resolver: yupResolver<IFormEquipmentFix>(schema),
+  } = useForm<IFormManeuverItem>({
+    resolver: yupResolver<IFormManeuverItem>(schema),
     mode: 'onChange',
-    defaultValues: {
-      equipment_id: +equipmentId,
-      fixed_at: moment().format('YYYY-MM-DD HH:mm:ss'),
-      payment_at: moment().format('YYYY-MM-DD HH:mm:ss'),
-    },
   });
 
   const {
@@ -81,7 +74,7 @@ function FormManeuver(props: IProps) {
     refetch,
   } = useQuery(
     ['get-detail-column-equipment-maneuver', id],
-    () => EquipmentManeuverApi.getEquipmentManeuverDetail(id),
+    () => ManeuverPageApi.getManeuverDetail(id),
     {
       enabled: !!id,
       cacheTime: 300000,
@@ -95,9 +88,9 @@ function FormManeuver(props: IProps) {
   };
 
   const { mutate: submitForm, isLoading: loadingSubmit } = useMutation(
-    (variable: IFormEquipmentFix) => {
-      if (id) return EquipmentFixApi.updateEquipmentFix(variable, id);
-      return EquipmentFixApi.createEquipmentFix(variable);
+    (variable: IFormManeuverItem) => {
+      if (id) return ManeuverPageApi.updateManeuver(variable, id);
+      return ManeuverPageApi.createManeuver(variable);
     },
     {
       onSuccess: (res) => {
@@ -161,7 +154,7 @@ function FormManeuver(props: IProps) {
 
   console.log('1', listOptionEmployee);
 
-  const handleSubmitForm = (values: IFormEquipmentFix): void => {
+  const handleSubmitForm = (values: IFormManeuverItem): void => {
     if (loadingSubmit) return;
     submitForm(values);
   };
@@ -203,20 +196,22 @@ function FormManeuver(props: IProps) {
             <div className="grid grid-cols-6 gap-x-8">
               <div className="col-span-4">
                 <UploadPdf
-                  onReceiveImages={() => ''}
-                  object_key={''}
-                  folder={''}
+                  onReceiveImages={(data) => {
+                    console.log('123', data);
+                  }}
+                  object_key={'maneuver'}
+                  folder={'equipment-maneuver'}
                 />
               </div>
               <div className="col-span-2">
                 <FormItem
                   className="mb-5"
                   label="Chuyển đến dự án"
-                  isError={!!errors?.fixed_at}
-                  messages={errors?.fixed_at?.message as string}
+                  isError={!!errors?.project_id}
+                  messages={errors?.project_id?.message as string}
                 >
                   <Controller
-                    name="fixed_at"
+                    name="project_id"
                     control={control}
                     render={() => {
                       return <SelectFieldConfig></SelectFieldConfig>;
@@ -227,11 +222,11 @@ function FormManeuver(props: IProps) {
                   isRequired={false}
                   className="mb-5"
                   label="Số quyết định"
-                  isError={!!errors?.location}
-                  messages={errors?.location?.message as string}
+                  isError={!!errors?.determine_number}
+                  messages={errors?.determine_number?.message as string}
                 >
                   <Input
-                    {...register('location')}
+                    {...register('determine_number')}
                     placeholder="Vui lòng nhập"
                     className="w-full"
                   />
@@ -240,11 +235,11 @@ function FormManeuver(props: IProps) {
                   isRequired={false}
                   className="mb-5"
                   label="Ngày chuyển đi"
-                  isError={!!errors?.payment_at}
-                  messages={errors?.payment_at?.message as string}
+                  isError={!!errors?.started_at}
+                  messages={errors?.started_at?.message as string}
                 >
                   <Controller
-                    name="payment_at"
+                    name="started_at"
                     control={control}
                     render={({ field }) => {
                       return (
@@ -260,11 +255,11 @@ function FormManeuver(props: IProps) {
                   isRequired={false}
                   className="mb-5"
                   label="Ngày chuyển đến"
-                  isError={!!errors?.payment_at}
-                  messages={errors?.payment_at?.message as string}
+                  isError={!!errors?.assigned_at}
+                  messages={errors?.assigned_at?.message as string}
                 >
                   <Controller
-                    name="payment_at"
+                    name="assigned_at"
                     control={control}
                     render={({ field }) => {
                       return (
@@ -279,14 +274,14 @@ function FormManeuver(props: IProps) {
                 <FormItem
                   className="mb-5"
                   label="Ghi chú"
-                  isError={!!errors?.content}
-                  messages={errors?.content?.message as string}
+                  isError={!!errors?.note}
+                  messages={errors?.note?.message as string}
                 >
                   <TextArea
                     rows={22}
                     style={{ resize: 'none' }}
                     placeholder="Vui lòng nhập"
-                    {...register('content')}
+                    {...register('note')}
                   />
                 </FormItem>
               </div>
