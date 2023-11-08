@@ -1,6 +1,5 @@
-import DetailTabHeader from '../Common/DetailTabHeader';
 import React, { useState } from 'react';
-import { notification, PaginationProps, Table, Tag } from 'tera-dls';
+import { notification, PaginationProps, Table } from 'tera-dls';
 import ActionCUD from '../../../../../../../_common/component/TableColumnCustom/ActionCUD';
 import PaginationCustom from '../../../../../../../_common/component/PaginationCustom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -9,11 +8,10 @@ import { messageError } from '../../../../../../../_common/constants/message';
 import { updateURLQuery } from '../../../../../../System/containers/ManagePage/TableConfig/container/Table';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BUTTON_KEY } from '../../../../../../../_common/constants/permission';
-import { EquipmentManeuverApi } from '../../_api';
+import { EquipmentDocumentApi } from '../../_api';
 import { IFormEquipmentFix, IFormModel } from '../../interfaces';
 import useConfirm from '../../../../../../../_common/hooks/useConfirm';
 import DetailManeuver from '../ModalDetail/DetailManeuver';
-import { statusConfigColor, statusTextColor } from '../../../../constants';
 import moment from 'moment';
 import FormManeuver from 'pages/ManageEquipment/Common/Container/FormManeuver';
 
@@ -22,7 +20,7 @@ interface IParams {
   limit: number;
 }
 
-function EquipmentDetailManeuver() {
+function EquipmentDetailRegistry() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { equipmentId } = useParams();
@@ -40,9 +38,9 @@ function EquipmentDetailManeuver() {
   };
 
   const { data, refetch } = useQuery(
-    ['get-table-equipment-maneuver-list', params],
+    ['get-table-equipment-registry-list', params],
     () =>
-      EquipmentManeuverApi.getEquipmentManeuverList({
+      EquipmentDocumentApi.getEquipmentDocumentList({
         params: filterField({ ...params, machine_id: equipmentId }),
       }),
     {
@@ -81,7 +79,7 @@ function EquipmentDetailManeuver() {
   };
 
   const { mutate: deleteColumn } = useMutation(
-    (id: number | string) => EquipmentManeuverApi.deleteEquipmentManeuver(id),
+    (id: number | string) => EquipmentDocumentApi.deleteEquipmentDocument(id),
     {
       onSuccess(res) {
         if (res?.code === 200) {
@@ -126,54 +124,28 @@ function EquipmentDetailManeuver() {
       },
     },
     {
-      title: <div className="text-xxs">Trạng thái</div>,
-      dataIndex: 'status',
+      title: <div className="text-xxs">Ngày bắt đầu</div>,
+      dataIndex: 'started_at',
       width: 100,
       render: (status: string, record) => (
-        <Tag className="w-fit text-xxs" color={statusConfigColor[status]}>
-          <span className={statusTextColor[status] + 'text-xxs'}>
-            {record?.status_text}
-          </span>
-        </Tag>
+        <span className="text-xxs">
+          {record?.started_at
+            ? moment(record?.started_at, 'YYYY-MM-DD HH:mm:ss').format(
+                'DD/MM/YYYY',
+              )
+            : ''}
+        </span>
       ),
     },
     {
-      title: <div className="text-xxs">Chuyển từ</div>,
-      dataIndex: '',
+      title: <div className="text-xxs">Ngày kết thúc</div>,
+      dataIndex: 'finished_at',
       width: 150,
       render: (text, record) => {
         return (
           <span className="text-xxs">
-            {record?.old_projects.length > 0
-              ? record?.old_projects[0].name
-              : ''}
-          </span>
-        );
-      },
-    },
-    {
-      title: <div className="text-xxs">Đến</div>,
-      dataIndex: '',
-      width: 150,
-      render: (text, record) => {
-        return (
-          <span className="text-xxs">
-            {record?.new_projects.length > 0
-              ? record?.new_projects[0].name
-              : ''}
-          </span>
-        );
-      },
-    },
-    {
-      title: <div className="text-xxs">Ngày điều đi</div>,
-      dataIndex: 'started_at',
-      width: 150,
-      render: (text, record) => {
-        return (
-          <span className="text-xxs">
-            {record?.started_at
-              ? moment(record?.started_at, 'YYYY-MM-DD HH:mm:ss').format(
+            {record?.finished_at
+              ? moment(record?.finished_at, 'YYYY-MM-DD HH:mm:ss').format(
                   'DD/MM/YYYY',
                 )
               : ''}
@@ -182,43 +154,26 @@ function EquipmentDetailManeuver() {
       },
     },
     {
-      title: <div className="text-xxs">Ngày điều đến</div>,
-      dataIndex: 'created_at',
+      title: <div className="text-xxs">Nơi đăng ký</div>,
+      dataIndex: 'address',
       width: 150,
       render: (text, record) => {
         return (
           <span className="text-xxs">
-            {record?.created_at
-              ? moment(record?.created_at, 'YYYY-MM-DD HH:mm:ss').format(
-                  'DD/MM/YYYY',
-                )
-              : ''}
+            {record?.address ? record?.address : ''}
           </span>
         );
       },
     },
     {
-      title: <div className="text-xxs">Quyết định</div>,
-      dataIndex: 'determine_number',
+      title: <div className="text-xxs">Ghi chú</div>,
+      dataIndex: 'note',
       width: 150,
-      render: (text, record) => (
-        <div>
-          <div className="flex items-center">
-            <div className="ml-2">
-              <ul>
-                <li>
-                  <span className="text-green-400 text-xxs">[{text}]</span>
-                </li>
-                <li>
-                  <div className="text-[10px]">
-                    <span className="text-gray-400">{record?.note}</span>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      ),
+      render: (text, record) => {
+        return (
+          <span className="text-xxs">{record?.note ? record?.note : ''}</span>
+        );
+      },
     },
     {
       title: '',
@@ -242,9 +197,6 @@ function EquipmentDetailManeuver() {
 
   return (
     <>
-      <DetailTabHeader
-        onClickButtonAdd={() => setFormModel({ open: true })}
-      ></DetailTabHeader>
       <div className="mt-5">
         <Table
           columns={columns}
@@ -286,4 +238,4 @@ function EquipmentDetailManeuver() {
   );
 }
 
-export default EquipmentDetailManeuver;
+export default EquipmentDetailRegistry;

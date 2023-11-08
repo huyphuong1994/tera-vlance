@@ -118,7 +118,7 @@ const TableManeuver = (props: ITableManeuverProps) => {
     {
       title: <div className="text-xxs">Thiết bị</div>,
       dataIndex: 'code',
-      width: 350,
+      width: 250,
       align: 'left',
       render: (_, record) => {
         return (
@@ -142,7 +142,7 @@ const TableManeuver = (props: ITableManeuverProps) => {
     {
       title: <div className="text-xxs">Số quyết định</div>,
       dataIndex: 'determine_number',
-      width: 200,
+      width: 120,
       render: (text) => {
         return <span className="text-xxs">{text}</span>;
       },
@@ -150,22 +150,22 @@ const TableManeuver = (props: ITableManeuverProps) => {
     {
       title: <div className="text-xxs">Dự án đang thực hiện</div>,
       dataIndex: 'total',
-      width: 200,
+      width: 250,
       render: (_, record) => {
         return (
           <div>
-            <div className="flex items-center">
-              <div className="ml-2">
-                <ul>
-                  <li>
-                    <span className="text-green-400 text-xxs">
-                      [{record?.code}]
-                    </span>
-                    <span className="text-xxs">{' ' + record?.name}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
+            {record?.new_projects && record.new_projects.length
+              ? record?.new_projects.map((project: any, key: number) => (
+                  <span>{key <= 1 ? project.name + ', ' : ''}</span>
+                ))
+              : ''}
+            {record?.new_projects && record?.new_projects.length > 2 ? (
+              <span className="text-blue-600">
+                ... + {record?.new_projects.length - 2}
+              </span>
+            ) : (
+              ''
+            )}
           </div>
         );
       },
@@ -173,7 +173,7 @@ const TableManeuver = (props: ITableManeuverProps) => {
     {
       title: <div className="text-xxs">Ngày chuyển đi</div>,
       dataIndex: '',
-      width: 200,
+      width: 150,
       render: () => {
         return <span className="text-xxs"></span>;
       },
@@ -181,7 +181,7 @@ const TableManeuver = (props: ITableManeuverProps) => {
     {
       title: <div className="text-xxs">Ngày chuyển đến</div>,
       dataIndex: '',
-      width: 200,
+      width: 150,
       render: () => {
         return <span className="text-xxs"></span>;
       },

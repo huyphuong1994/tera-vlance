@@ -1,6 +1,6 @@
 import { ArrowSmallLeftSolid, Breadcrumb, ItemType } from 'tera-dls';
 import { useNavigate } from 'react-router-dom';
-import { MANAGE_PAGE_URL } from '../../../../../../../_common/constants/url';
+import { EQUIPMENT_PAGE_URL } from '../../../../../../../_common/constants/url';
 
 function EquipmentDetailHeader() {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ function EquipmentDetailHeader() {
       title: (
         <a
           className="cursor-pointer"
-          onClick={() => navigate(`${MANAGE_PAGE_URL.list.path}`)}
+          onClick={() => navigate(`${EQUIPMENT_PAGE_URL.list.shortenUrl}`)}
         >
           Danh sách thiết bị
         </a>

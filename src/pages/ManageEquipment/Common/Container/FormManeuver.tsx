@@ -20,7 +20,6 @@ import {
   messageWarning,
 } from '../../../../_common/constants/message';
 import ManeuverPageApi from '../../Maneuver/_api';
-import { HrmApi } from '../../../../_common/dof/_api';
 // import { useParams } from 'react-router-dom';
 import UploadPdf from '../../../../_common/component/UploadPdf';
 import SelectFieldConfig from '../../../../_common/dof/Select/SelectFieldConfig';
@@ -132,34 +131,14 @@ function FormManeuver(props: IProps) {
     }
   };
 
-  const { data: listEmployee } = useQuery(
-    ['get-employee'],
-    () =>
-      HrmApi.getListEmployee({
-        page: 1,
-        limit: 10,
-      }),
-    {
-      staleTime: 300000,
-      cacheTime: 300000,
-    },
-  );
-
-  const listOptionEmployee = listEmployee?.data?.data?.map((item) => {
-    return {
-      label: item.full_name,
-      value: item.id,
-    };
-  });
-
-  console.log('1', listOptionEmployee);
-
   const handleSubmitForm = (values: IFormManeuverItem): void => {
     if (loadingSubmit) return;
     submitForm(values);
   };
 
   useEffect(() => {
+    console.log('123', id);
+
     if (detailColumn && id) {
       Object.entries(detailColumn).forEach(
         ([fieldName, fieldValue]: [any, any]) => {
@@ -170,6 +149,7 @@ function FormManeuver(props: IProps) {
   }, [detailColumn, id]);
 
   useEffect(() => {
+    console.log('123', id);
     if (id) refetch();
   }, [id]);
 
@@ -196,11 +176,11 @@ function FormManeuver(props: IProps) {
             <div className="grid grid-cols-6 gap-x-8">
               <div className="col-span-4">
                 <UploadPdf
-                  onReceiveImages={(data) => {
-                    console.log('123', data);
-                  }}
+                  folder={'maneuver'}
                   object_key={'maneuver'}
-                  folder={'equipment-maneuver'}
+                  onReceiveImages={(data) => {
+                    console.log(data);
+                  }}
                 />
               </div>
               <div className="col-span-2">

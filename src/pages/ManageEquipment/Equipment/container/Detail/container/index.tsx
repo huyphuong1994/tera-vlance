@@ -20,7 +20,7 @@ function EquipmentPageDetail() {
     // refetch: refetchDetail,
     // isLoading: loadingDetail,
   } = useQuery(
-    ['get-detail-config-permission', equipmentId],
+    ['get-detail-equipment', equipmentId],
     () => EquipmentPageApi.getDetailEquipment(equipmentId),
     {
       enabled: !!equipmentId,

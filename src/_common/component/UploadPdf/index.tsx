@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Axios from 'axios';
-import { endpoint } from '_common/constants/common';
+import { PortalEndpoint } from '_common/constants/common';
 import UploadButton from './UploadButton';
 import { rootStore } from 'states/stores';
 
@@ -97,7 +97,7 @@ const UploadPdf = ({
       const deviceCode = rootStore.authStore.device;
       const result = await Axios({
         method: 'POST',
-        url: `${endpoint}/file/upload`,
+        url: `${PortalEndpoint}/file/upload`,
         data: form,
         headers: {
           authorization: authToken ? `Bearer ${authToken}` : '',

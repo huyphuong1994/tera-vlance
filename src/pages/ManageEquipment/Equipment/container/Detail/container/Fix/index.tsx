@@ -7,7 +7,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { filterField, formatNumber } from '../../../../../../../_common/utils';
 import { messageError } from '../../../../../../../_common/constants/message';
 import { updateURLQuery } from '../../../../../../System/containers/ManagePage/TableConfig/container/Table';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BUTTON_KEY } from '../../../../../../../_common/constants/permission';
 import { EquipmentFixApi } from '../../_api';
 import { IFormEquipmentFix, IFormModel } from '../../interfaces';
@@ -24,6 +24,7 @@ function EquipmentDetailFix() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const confirm = useConfirm();
+  const { equipmentId } = useParams();
   const [formModel, setFormModel] = useState<IFormModel>({ open: false });
   const [openDetail, setOpenDetail] = useState<boolean>(false);
   const [recordDetail, setRecordDetail] = useState<IFormEquipmentFix>();
@@ -40,7 +41,7 @@ function EquipmentDetailFix() {
     ['get-table-equipment-fix-list', params],
     () =>
       EquipmentFixApi.getEquipmentFixList({
-        params: filterField({ ...params }),
+        params: filterField({ ...params, machine_id: equipmentId }),
       }),
     {
       staleTime: 300000,
@@ -118,7 +119,11 @@ function EquipmentDetailFix() {
       width: 80,
       fixed: 'center',
       render: (_, record, index) => {
-        return <span className="text-xxs">{index + 1}</span>;
+        return (
+          <span className="text-xxs">
+            {index + (params.page - 1) * params.limit + 1}
+          </span>
+        );
       },
     },
     {
@@ -128,10 +133,27 @@ function EquipmentDetailFix() {
       align: 'left',
       render: (_, record) => {
         return (
-          <div className="text-xxs">
-            <span>Mã thiết bị</span>
-            <span>- Tên thiết bị dự án </span>
-            <span>{record?.project?.name}</span>
+          <div>
+            <div className="flex items-center">
+              <div className="ml-2">
+                <ul>
+                  <li>
+                    <span className="text-green-400 text-xxs font-semibold">
+                      {'Mã thiết bị'}
+                    </span>
+                    <span className="text-xxs">{' - Tên thiết bị'}</span>
+                  </li>
+                  <li>
+                    <div className="text-xxs mt-2">
+                      <span className="text-gray-800 font-semibold">
+                        Dự án{' '}
+                      </span>
+                      <span>- {record?.project?.name}</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         );
       },

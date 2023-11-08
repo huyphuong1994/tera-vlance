@@ -5,7 +5,6 @@ interface IEquipmentDetailProps {
 }
 
 function EquipmentDetailInfo({ equipmentDetail }: IEquipmentDetailProps) {
-  console.log(equipmentDetail);
   return (
     <>
       <div className="mt-5">

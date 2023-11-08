@@ -135,7 +135,7 @@ const TableEquipment = (props: ITableEquipmentProps) => {
                     <span className="text-xxs">{' ' + record?.name}</span>
                   </li>
                   <li>
-                    <div className="text-[10px]">
+                    <div className="text-xxs mt-2">
                       <span className="text-gray-400">Vị trí: </span>
                       <span>{record?.name}</span>
                     </div>
