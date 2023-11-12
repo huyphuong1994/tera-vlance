@@ -166,7 +166,7 @@ const UploadButton = ({
         <Button htmlType="button" type="alternative">
           File
         </Button>
-        <p>
+        <div>
           {file?.name ? (
             file?.name
           ) : (
@@ -175,7 +175,7 @@ const UploadButton = ({
               <span>Upload file</span>
             </div>
           )}
-        </p>
+        </div>
       </div>
     </div>
   );

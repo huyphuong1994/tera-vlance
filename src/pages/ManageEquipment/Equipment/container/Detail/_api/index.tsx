@@ -1,6 +1,11 @@
 import { endpoint } from '../../../../../../_common/constants/common';
 import api from '../../../../../../states/drivers';
-import { IFormEquipmentFix, IFormEquipmentManeuver } from '../interfaces';
+import {
+  IFormEquipmentFix,
+  IFormEquipmentManeuver,
+  IFormInsurance,
+  IFormRegistry,
+} from '../interfaces';
 
 const EquipmentFixUrl = `${endpoint}/eqp/fix`;
 const EquipmentManeuverUrl = `${endpoint}/eqp/project`;
@@ -65,7 +70,7 @@ const EquipmentDocumentApi = {
     await api
       .get(`${EquipmentDocumentUrl}/detail/${id}`)
       .then((result) => result.data?.data),
-  createEquipmentDocument: async (param: IFormEquipmentManeuver) =>
+  createEquipmentDocument: async (param: IFormRegistry) =>
     await api
       .post(`${EquipmentDocumentUrl}/create`, param)
       .then((result) => result.data),
@@ -73,10 +78,7 @@ const EquipmentDocumentApi = {
     await api
       .delete(`${EquipmentDocumentUrl}/delete/${id}`)
       .then((result) => result.data),
-  updateEquipmentDocument: async (
-    param: IFormEquipmentManeuver,
-    id: string | number,
-  ) =>
+  updateEquipmentDocument: async (param: IFormRegistry, id: string | number) =>
     await api
       .put(`${EquipmentDocumentUrl}/update/${id}`, param)
       .then((result) => result.data),
@@ -91,7 +93,7 @@ const EquipmentInsuranceApi = {
     await api
       .get(`${EquipmentInsuranceUrl}/detail/${id}`)
       .then((result) => result.data?.data),
-  createEquipmentInsurance: async (param: IFormEquipmentManeuver) =>
+  createEquipmentInsurance: async (param: IFormInsurance) =>
     await api
       .post(`${EquipmentInsuranceUrl}/create`, param)
       .then((result) => result.data),
@@ -100,7 +102,7 @@ const EquipmentInsuranceApi = {
       .delete(`${EquipmentInsuranceUrl}/delete/${id}`)
       .then((result) => result.data),
   updateEquipmentInsurance: async (
-    param: IFormEquipmentManeuver,
+    param: IFormInsurance,
     id: string | number,
   ) =>
     await api

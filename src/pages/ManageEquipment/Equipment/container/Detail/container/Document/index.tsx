@@ -1,4 +1,4 @@
-import DetailTabHeader from '../Common/DetailTabHeader';
+import DetailTabHeader from '../Header/DetailTabHeader';
 import React, { useState } from 'react';
 import { Tabs } from 'tera-dls';
 import TableRegistry from './TableRegistry';
@@ -23,6 +23,7 @@ function EquipmentDetailDocument() {
   return (
     <>
       <DetailTabHeader
+        type={'dropdown'}
         onClickButtonAdd={() => {
           return '';
         }}

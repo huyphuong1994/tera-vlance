@@ -1,4 +1,4 @@
-import DetailTabHeader from '../Common/DetailTabHeader';
+import DetailTabHeader from '../Header/DetailTabHeader';
 import React, { useState } from 'react';
 import { notification, PaginationProps, Table, Tag } from 'tera-dls';
 import ActionCUD from '../../../../../../../_common/component/TableColumnCustom/ActionCUD';
@@ -243,6 +243,7 @@ function EquipmentDetailManeuver() {
   return (
     <>
       <DetailTabHeader
+        type={'button'}
         onClickButtonAdd={() => setFormModel({ open: true })}
       ></DetailTabHeader>
       <div className="mt-5">

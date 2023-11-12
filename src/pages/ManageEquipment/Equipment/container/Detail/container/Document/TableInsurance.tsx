@@ -13,7 +13,7 @@ import { IFormEquipmentFix, IFormModel } from '../../interfaces';
 import useConfirm from '../../../../../../../_common/hooks/useConfirm';
 import DetailManeuver from '../ModalDetail/DetailManeuver';
 import moment from 'moment';
-import FormManeuver from 'pages/ManageEquipment/Common/Container/FormManeuver';
+import FormInsurance from '../Form/FormInsurance';
 
 interface IParams {
   page: number;
@@ -215,10 +215,10 @@ function EquipmentDetailInsurance() {
           />
         )}
         {formModel.open && (
-          <FormManeuver
+          <FormInsurance
             onRefetch={() =>
               queryClient.invalidateQueries([
-                'get-table-equipment-maneuver-list',
+                'get-table-equipment-insurance-list',
               ])
             }
             id={idColumn}

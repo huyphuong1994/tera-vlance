@@ -12,6 +12,7 @@ import useConfirm from '../../../../../_common/hooks/useConfirm';
 import { EQUIPMENT_PAGE_URL } from '../../../../../_common/constants/url';
 import ManeuverPageApi from '../../_api';
 import FormManeuver from '../../../Common/Container/FormManeuver';
+import moment from 'moment/moment';
 
 interface IParams {
   page: number;
@@ -174,16 +175,32 @@ const TableManeuver = (props: ITableManeuverProps) => {
       title: <div className="text-xxs">Ngày chuyển đi</div>,
       dataIndex: '',
       width: 150,
-      render: () => {
-        return <span className="text-xxs"></span>;
+      render: (text, record) => {
+        return (
+          <span className="text-xxs">
+            {record?.started_at
+              ? moment(record?.started_at, 'YYYY-MM-DD HH:mm:ss').format(
+                  'DD/MM/YYYY',
+                )
+              : ''}
+          </span>
+        );
       },
     },
     {
       title: <div className="text-xxs">Ngày chuyển đến</div>,
       dataIndex: '',
       width: 150,
-      render: () => {
-        return <span className="text-xxs"></span>;
+      render: (text, record) => {
+        return (
+          <span className="text-xxs">
+            {record?.created_at
+              ? moment(record?.created_at, 'YYYY-MM-DD HH:mm:ss').format(
+                  'DD/MM/YYYY',
+                )
+              : ''}
+          </span>
+        );
       },
     },
     {

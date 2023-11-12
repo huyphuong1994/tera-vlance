@@ -1,4 +1,11 @@
-import { ArrowSmallLeftSolid, Breadcrumb, ItemType } from 'tera-dls';
+import {
+  ArrowSmallLeftSolid,
+  Breadcrumb,
+  Button,
+  ItemType,
+  PencilSquareOutlined,
+  XMarkOutlined,
+} from 'tera-dls';
 import { useNavigate } from 'react-router-dom';
 import { EQUIPMENT_PAGE_URL } from '../../../../../../../_common/constants/url';
 
@@ -34,37 +41,37 @@ function EquipmentDetailHeader() {
           <Breadcrumb separator={'>'} items={breadcrumbItem} />
         </div>
 
-        {/*<div className="flex justify-between page-header__function">*/}
-        {/*  <div className="flex gap-2.5">*/}
-        {/*    <Button*/}
-        {/*      type="danger"*/}
-        {/*      className="page-header-btn"*/}
-        {/*      onClick={() => handleDelete(tableId)}*/}
-        {/*    >*/}
-        {/*      Xóa*/}
-        {/*      <XMarkOutlined width={'1rem'} height={'1rem'} />*/}
-        {/*    </Button>*/}
-        {/*    <Button*/}
-        {/*      className="page-header-btn"*/}
-        {/*      onClick={() =>*/}
-        {/*        setFormModel({ open: true, id: Number(tableId) })*/}
-        {/*      }*/}
-        {/*    >*/}
-        {/*      Sửa*/}
-        {/*      <PencilSquareOutlined width={'1rem'} height={'1rem'} />*/}
-        {/*    </Button>*/}
-        {/*  </div>*/}
-        {/*  <Dropdown*/}
-        {/*    menu={{*/}
-        {/*      items: itemsDropdown,*/}
-        {/*    }}*/}
-        {/*  >*/}
-        {/*    <Button*/}
-        {/*      type="alternative"*/}
-        {/*      icon={<AdjustmentsHorizontalOutlined />}*/}
-        {/*    />*/}
-        {/*  </Dropdown>*/}
-        {/*</div>*/}
+        <div className="flex justify-between page-header__function">
+          <div className="flex gap-2.5">
+            <Button
+              type="danger"
+              className="page-header-btn"
+              // onClick={() => handleDelete(tableId)}
+            >
+              Xóa
+              <XMarkOutlined width={'1rem'} height={'1rem'} />
+            </Button>
+            <Button
+              className="page-header-btn"
+              onClick={() => {
+                return '';
+              }}
+            >
+              Sửa
+              <PencilSquareOutlined width={'1rem'} height={'1rem'} />
+            </Button>
+          </div>
+          {/*<Dropdown*/}
+          {/*  menu={{*/}
+          {/*    items: itemsDropdown,*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  <Button*/}
+          {/*    type="alternative"*/}
+          {/*    icon={<AdjustmentsHorizontalOutlined />}*/}
+          {/*  />*/}
+          {/*</Dropdown>*/}
+        </div>
       </div>
     </>
   );

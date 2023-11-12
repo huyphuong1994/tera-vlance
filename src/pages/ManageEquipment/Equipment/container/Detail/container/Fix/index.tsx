@@ -1,4 +1,4 @@
-import DetailTabHeader from '../Common/DetailTabHeader';
+import DetailTabHeader from '../Header/DetailTabHeader';
 import React, { useState } from 'react';
 import { notification, PaginationProps, Table } from 'tera-dls';
 import ActionCUD from '../../../../../../../_common/component/TableColumnCustom/ActionCUD';
@@ -14,6 +14,7 @@ import { IFormEquipmentFix, IFormModel } from '../../interfaces';
 import FormFix from '../Form/FormFix';
 import useConfirm from '../../../../../../../_common/hooks/useConfirm';
 import DetailFix from '../ModalDetail/DetailFix';
+import moment from 'moment';
 
 interface IParams {
   page: number;
@@ -139,7 +140,7 @@ function EquipmentDetailFix() {
                 <ul>
                   <li>
                     <span className="text-green-400 text-xxs font-semibold">
-                      {'Mã thiết bị'}
+                      {record?.machine?.code}
                     </span>
                     <span className="text-xxs">{' - Tên thiết bị'}</span>
                   </li>
@@ -171,7 +172,13 @@ function EquipmentDetailFix() {
       dataIndex: 'fixed_at',
       width: 200,
       render: (text) => {
-        return <span className="text-xxs">{text}</span>;
+        return (
+          <span className="text-xxs">
+            {text
+              ? moment(text, 'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY')
+              : ''}
+          </span>
+        );
       },
     },
     {
@@ -233,6 +240,7 @@ function EquipmentDetailFix() {
   return (
     <>
       <DetailTabHeader
+        type={'button'}
         onClickButtonAdd={() => setFormModel({ open: true })}
       ></DetailTabHeader>
       <div className="mt-5">

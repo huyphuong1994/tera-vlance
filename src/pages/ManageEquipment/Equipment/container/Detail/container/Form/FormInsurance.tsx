@@ -13,19 +13,16 @@ import moment from 'moment/moment';
 import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import useConfirm from '../../../../_common/hooks/useConfirm';
+import { IFileUpload, IFormInsurance } from '../../interfaces';
+import useConfirm from '../../../../../../../_common/hooks/useConfirm';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   messageError,
   messageWarning,
-} from '../../../../_common/constants/message';
-import ManeuverPageApi from '../../Maneuver/_api';
-// import { useParams } from 'react-router-dom';
-import UploadPdf from '../../../../_common/component/UploadPdf';
-import SelectFieldConfig from '../../../../_common/dof/Select/SelectFieldConfig';
-import { IFormManeuverItem } from '../../Maneuver/interfaces';
-import { filterField } from '../../../../_common/utils';
-import ProjectApi from '../../../../states/api/project';
+} from '../../../../../../../_common/constants/message';
+import { EquipmentInsuranceApi } from '../../_api';
+import { useParams } from 'react-router-dom';
+import UploadPdf from '../../../../../../../_common/component/UploadPdf';
 
 interface IProps {
   id?: string | number;
@@ -35,27 +32,27 @@ interface IProps {
 }
 
 const schema = yup.object().shape({
-  project_id: yup.number().required('Vui lòng nhập trường này!'),
-  equipment_id: yup.array().required('Vui lòng nhập trường này!'),
+  equipment_id: yup.number().required('Vui lòng nhập trường này!'),
+  started_at: yup.string().required('Vui lòng nhập trường này!'),
+  finished_at: yup.string().required('Vui lòng nhập trường này!'),
+  address: yup.string().required('Vui lòng nhập trường này!'),
+  note: yup
+    .string()
+    .required('Vui lòng nhập trường này!')
+    .max(500, 'Không nhập quá 191 ký tự!'),
   file_upload: yup.object().shape({
     id: yup.number(),
     name: yup.string(),
     url: yup.string(),
   }),
-  determine_number: yup.string().required('Vui lòng nhập trường này!'),
-  started_at: yup.string(),
-  assigned_at: yup.string(),
-  note: yup
-    .string()
-    .required('Vui lòng nhập trường này!')
-    .max(500, 'Không nhập quá 500 ký tự!'),
 });
 
-function FormManeuver(props: IProps) {
+function FormInsurance(props: IProps) {
   const confirm = useConfirm();
-  // const { equipmentId } = useParams();
+  const { equipmentId } = useParams();
   const { open = false, id, onClose, onRefetch } = props;
-  const [params] = useState<any>({ page: 1, limit: 10 });
+  const [fileUpload, setFileUpload] = useState<IFileUpload[]>([]);
+
   const {
     register,
     control,
@@ -64,9 +61,14 @@ function FormManeuver(props: IProps) {
     // watch,
     handleSubmit,
     formState: { errors, isDirty },
-  } = useForm<IFormManeuverItem>({
-    resolver: yupResolver<IFormManeuverItem>(schema),
+  } = useForm<IFormInsurance>({
+    resolver: yupResolver<IFormInsurance>(schema),
     mode: 'onChange',
+    defaultValues: {
+      equipment_id: +equipmentId,
+      started_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+      finished_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+    },
   });
 
   const {
@@ -75,8 +77,8 @@ function FormManeuver(props: IProps) {
     isError,
     refetch,
   } = useQuery(
-    ['get-detail-column-equipment-maneuver', id],
-    () => ManeuverPageApi.getManeuverDetail(id),
+    ['get-detail-column-equipment', id],
+    () => EquipmentInsuranceApi.getEquipmentInsuranceDetail(id),
     {
       enabled: !!id,
       cacheTime: 300000,
@@ -84,36 +86,20 @@ function FormManeuver(props: IProps) {
     },
   );
 
-  const { data: projects } = useQuery(
-    ['get-project-list', { params }],
-    () => {
-      return ProjectApi.getList({
-        params: filterField({ ...params }),
-      });
-    },
-    {
-      staleTime: 300000,
-      cacheTime: 300000,
-      onError: (error: any) => {
-        const errorMessage = error?.data?.msg || messageError.ERROR_API;
-        notification.error({
-          message: errorMessage,
-        });
-      },
-    },
-  );
-
-  console.log(projects);
-
   const handleClose = (): void => {
     reset();
     onClose();
   };
 
   const { mutate: submitForm, isLoading: loadingSubmit } = useMutation(
-    (variable: IFormManeuverItem) => {
-      if (id) return ManeuverPageApi.updateManeuver(variable, id);
-      return ManeuverPageApi.createManeuver(variable);
+    (variable: IFormInsurance) => {
+      if (fileUpload.length > 0) {
+        variable.file_upload = fileUpload[0];
+      }
+
+      if (id)
+        return EquipmentInsuranceApi.updateEquipmentInsurance(variable, id);
+      return EquipmentInsuranceApi.createEquipmentInsurance(variable);
     },
     {
       onSuccess: (res) => {
@@ -155,14 +141,12 @@ function FormManeuver(props: IProps) {
     }
   };
 
-  const handleSubmitForm = (values: IFormManeuverItem): void => {
+  const handleSubmitForm = (values: IFormInsurance): void => {
     if (loadingSubmit) return;
     submitForm(values);
   };
 
   useEffect(() => {
-    console.log('123', id);
-
     if (detailColumn && id) {
       Object.entries(detailColumn).forEach(
         ([fieldName, fieldValue]: [any, any]) => {
@@ -173,7 +157,6 @@ function FormManeuver(props: IProps) {
   }, [detailColumn, id]);
 
   useEffect(() => {
-    console.log('123', id);
     if (id) refetch();
   }, [id]);
 
@@ -185,7 +168,7 @@ function FormManeuver(props: IProps) {
     <>
       <Modal
         centered={true}
-        title={id ? 'SỬA ĐIỀU ĐỘNG THIẾT BỊ' : 'THÊM ĐIỀU ĐỘNG THIẾT BỊ'}
+        title={id ? 'SỬA THÔNG TIN ĐĂNG KIỂM' : 'THÊM THÔNG TIN ĐĂNG KIỂM'}
         open={open}
         width={'90%'}
         closeIcon={false}
@@ -203,42 +186,15 @@ function FormManeuver(props: IProps) {
                   folder={'maneuver'}
                   object_key={'maneuver'}
                   onReceiveImages={(data) => {
-                    console.log(data);
+                    if (data.length > 0) setFileUpload(data[0]);
                   }}
+                  fileList={fileUpload}
                 />
               </div>
               <div className="col-span-2">
                 <FormItem
                   className="mb-5"
-                  label="Chuyển đến dự án"
-                  isError={!!errors?.project_id}
-                  messages={errors?.project_id?.message as string}
-                >
-                  <Controller
-                    name="project_id"
-                    control={control}
-                    render={() => {
-                      return <SelectFieldConfig></SelectFieldConfig>;
-                    }}
-                  />
-                </FormItem>
-                <FormItem
-                  isRequired={false}
-                  className="mb-5"
-                  label="Số quyết định"
-                  isError={!!errors?.determine_number}
-                  messages={errors?.determine_number?.message as string}
-                >
-                  <Input
-                    {...register('determine_number')}
-                    placeholder="Vui lòng nhập"
-                    className="w-full"
-                  />
-                </FormItem>
-                <FormItem
-                  isRequired={false}
-                  className="mb-5"
-                  label="Ngày chuyển đi"
+                  label="Ngày bắt đầu"
                   isError={!!errors?.started_at}
                   messages={errors?.started_at?.message as string}
                 >
@@ -256,14 +212,13 @@ function FormManeuver(props: IProps) {
                   />
                 </FormItem>
                 <FormItem
-                  isRequired={false}
                   className="mb-5"
-                  label="Ngày chuyển đến"
-                  isError={!!errors?.assigned_at}
-                  messages={errors?.assigned_at?.message as string}
+                  label="Ngày kết thúc"
+                  isError={!!errors?.finished_at}
+                  messages={errors?.finished_at?.message as string}
                 >
                   <Controller
-                    name="assigned_at"
+                    name="finished_at"
                     control={control}
                     render={({ field }) => {
                       return (
@@ -276,6 +231,19 @@ function FormManeuver(props: IProps) {
                   />
                 </FormItem>
                 <FormItem
+                  className="mb-5"
+                  label="Nơi đăng ký"
+                  isError={!!errors?.address}
+                  messages={errors?.address?.message as string}
+                >
+                  <Input
+                    {...register('address')}
+                    placeholder="Vui lòng nhập"
+                    className="w-full"
+                  />
+                </FormItem>
+                <FormItem
+                  isRequired={false}
                   className="mb-5"
                   label="Ghi chú"
                   isError={!!errors?.note}
@@ -297,4 +265,4 @@ function FormManeuver(props: IProps) {
   );
 }
 
-export default FormManeuver;
+export default FormInsurance;

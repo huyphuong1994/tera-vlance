@@ -28,3 +28,27 @@ export interface IFormEquipmentManeuver {
   price: number;
   content: string;
 }
+
+export interface IFormRegistry {
+  equipment_id: number;
+  started_at: string;
+  finished_at: string;
+  address: string;
+  note: string;
+  file_upload: IFileUpload;
+}
+
+export interface IFormInsurance {
+  equipment_id: number;
+  started_at: string;
+  finished_at: string;
+  address: string;
+  note: string;
+  file_upload: IFileUpload;
+}
+
+export interface IFileUpload {
+  url?: string;
+  name?: string;
+  id?: number;
+}

@@ -2,9 +2,9 @@ import { notification, PaginationProps, Table } from 'tera-dls';
 import ActionCUD from '../../../../../_common/component/TableColumnCustom/ActionCUD';
 import { BUTTON_KEY } from '../../../../../_common/constants/permission';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { filterField } from '../../../../../_common/utils';
+import { filterField, formatNumber } from '../../../../../_common/utils';
 import { messageError } from '../../../../../_common/constants/message';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { updateURLQuery } from '../../../../System/containers/ManagePage/TableConfig/container/Table';
 import { useNavigate } from 'react-router-dom';
 import PaginationCustom from '../../../../../_common/component/PaginationCustom';
@@ -12,6 +12,7 @@ import useConfirm from '../../../../../_common/hooks/useConfirm';
 import { EQUIPMENT_PAGE_URL } from '../../../../../_common/constants/url';
 import FixForm from '../Form';
 import FixPageApi from '../../_api';
+import moment from 'moment/moment';
 
 interface IParams {
   page: number;
@@ -120,41 +121,90 @@ const TableFix = (props: ITableCategoryProps) => {
       dataIndex: 'code',
       width: 350,
       align: 'left',
+      render: (_, record) => {
+        return (
+          <div>
+            <div className="flex items-center">
+              <div className="ml-2">
+                <ul>
+                  <li>
+                    <span className="text-green-400 text-xxs font-semibold">
+                      {record?.machine?.code}
+                    </span>
+                    <span className="text-xxs"> - {record?.machine?.name}</span>
+                  </li>
+                  <li>
+                    <div className="text-xxs mt-2">
+                      <span className="text-gray-800 font-semibold">
+                        Dự án{' '}
+                      </span>
+                      <span>- {record?.project?.name}</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        );
+      },
     },
     {
       title: 'Nội dung',
-      dataIndex: 'title',
+      dataIndex: 'content',
       width: 180,
+      render: (text) => {
+        return <span className="text-xxs">{text}</span>;
+      },
     },
     {
       title: 'Thời gian',
-      dataIndex: 'total',
+      dataIndex: 'fixed_at',
       width: 180,
+      render: (text) => {
+        return (
+          <span className="text-xxs">
+            {text
+              ? moment(text, 'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY')
+              : ''}
+          </span>
+        );
+      },
     },
     {
       title: 'Đơn vị',
-      dataIndex: 'total',
+      dataIndex: 'units',
       width: 180,
+      render: (text) => {
+        return <span className="text-xxs">{text}</span>;
+      },
     },
     {
       title: 'Số lượng',
-      dataIndex: 'total',
+      dataIndex: 'quantity',
       width: 180,
+      render: (text) => {
+        return <span className="text-xxs">{formatNumber(text)}</span>;
+      },
     },
     {
       title: 'Đơn giá',
-      dataIndex: 'total',
+      dataIndex: 'price',
       width: 180,
+      render: (text) => <span className="text-xxs">{formatNumber(text)}</span>,
     },
     {
       title: 'VAT(%)',
-      dataIndex: 'total',
+      dataIndex: 'vat',
       width: 100,
+      render: (text) => {
+        return <span className="text-xxs">{text}</span>;
+      },
     },
     {
       title: 'Thành tiền(đ)',
-      dataIndex: 'total',
+      dataIndex: 'sum_total',
       width: 200,
+      render: (text) => <span className="text-xxs">{formatNumber(text)}</span>,
     },
     {
       title: '',
