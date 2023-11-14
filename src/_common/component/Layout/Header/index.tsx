@@ -6,11 +6,11 @@ const Header = () => {
   const listIcon = [<PhoneOutlined />, <EnvelopeOutlined />, <BellOutlined />];
   const emailNotification = (key: number) => {
     if (key == 1) {
-      return 'w-6 h-6 after:content-[10]';
+      return "w-6 h-6 relative before:text-white before:content-['19'] before:absolute before:right-[-5px] before:top-[-6px] before:w-4 before:h-4 before:bg-red-400 before:rounded-full before:text-center before:text-[8px]";
     }
 
     if (key == 2) {
-      return 'w-6 h-6 after:content-[10]';
+      return "w-6 h-6 relative before:text-white before:content-['9'] before:absolute before:right-[-5px] before:top-[-6px] before:w-4 before:h-4 before:bg-red-400 before:rounded-full before:text-center before:text-[8px]";
     }
 
     return 'w-6 h-6';

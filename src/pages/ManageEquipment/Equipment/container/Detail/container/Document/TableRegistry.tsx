@@ -8,7 +8,7 @@ import { messageError } from '../../../../../../../_common/constants/message';
 import { updateURLQuery } from '../../../../../../System/containers/ManagePage/TableConfig/container/Table';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BUTTON_KEY } from '../../../../../../../_common/constants/permission';
-import { EquipmentDocumentApi } from '../../_api';
+import { EquipmentRegistryApi } from '../../_api';
 import { IFormEquipmentFix, IFormModel } from '../../interfaces';
 import useConfirm from '../../../../../../../_common/hooks/useConfirm';
 import DetailManeuver from '../ModalDetail/DetailManeuver';
@@ -40,7 +40,7 @@ function EquipmentDetailRegistry() {
   const { data, refetch } = useQuery(
     ['get-table-equipment-registry-list', params],
     () =>
-      EquipmentDocumentApi.getEquipmentDocumentList({
+      EquipmentRegistryApi.getEquipmentRegistryList({
         params: filterField({ ...params, machine_id: equipmentId }),
       }),
     {
@@ -75,11 +75,10 @@ function EquipmentDetailRegistry() {
   const handleUpdate = (id: number) => {
     setFormModel({ open: true });
     setIdColumn(id);
-    console.log('2', id);
   };
 
   const { mutate: deleteColumn } = useMutation(
-    (id: number | string) => EquipmentDocumentApi.deleteEquipmentDocument(id),
+    (id: number | string) => EquipmentRegistryApi.deleteEquipmentRegistry(id),
     {
       onSuccess(res) {
         if (res?.code === 200) {

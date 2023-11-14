@@ -147,6 +147,12 @@ function FormInsurance(props: IProps) {
   };
 
   useEffect(() => {
+    setFileUpload([
+      {
+        name: detailColumn?.file_name,
+        url: detailColumn?.file_url,
+      },
+    ]);
     if (detailColumn && id) {
       Object.entries(detailColumn).forEach(
         ([fieldName, fieldValue]: [any, any]) => {
@@ -186,7 +192,7 @@ function FormInsurance(props: IProps) {
                   folder={'maneuver'}
                   object_key={'maneuver'}
                   onReceiveImages={(data) => {
-                    if (data.length > 0) setFileUpload(data[0]);
+                    if (data.length > 0) setFileUpload(data);
                   }}
                   fileList={fileUpload}
                 />

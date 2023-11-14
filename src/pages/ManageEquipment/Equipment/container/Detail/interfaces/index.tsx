@@ -47,6 +47,13 @@ export interface IFormInsurance {
   file_upload: IFileUpload;
 }
 
+export interface IFormRecord {
+  equipment_id: number;
+  status: number;
+  note: string;
+  file_upload: IFileUpload;
+}
+
 export interface IFileUpload {
   url?: string;
   name?: string;

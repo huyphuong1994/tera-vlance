@@ -20,7 +20,7 @@ import {
   messageError,
   messageWarning,
 } from '../../../../../../../_common/constants/message';
-import { EquipmentDocumentApi } from '../../_api';
+import { EquipmentRegistryApi } from '../../_api';
 import { useParams } from 'react-router-dom';
 import UploadPdf from '../../../../../../../_common/component/UploadPdf';
 
@@ -77,7 +77,7 @@ function FormRegistry(props: IProps) {
     refetch,
   } = useQuery(
     ['get-detail-column-registry', id],
-    () => EquipmentDocumentApi.getEquipmentDocumentDetail(id),
+    () => EquipmentRegistryApi.getEquipmentRegistryList(id),
     {
       enabled: !!id,
       cacheTime: 300000,
@@ -92,12 +92,14 @@ function FormRegistry(props: IProps) {
 
   const { mutate: submitForm, isLoading: loadingSubmit } = useMutation(
     (variable: IFormRegistry) => {
+      console.log('123', fileUpload);
+
       if (fileUpload.length > 0) {
         variable.file_upload = fileUpload[0];
       }
 
-      if (id) return EquipmentDocumentApi.updateEquipmentDocument(variable, id);
-      return EquipmentDocumentApi.createEquipmentDocument(variable);
+      if (id) return EquipmentRegistryApi.updateEquipmentRegistry(variable, id);
+      return EquipmentRegistryApi.createEquipmentRegistry(variable);
     },
     {
       onSuccess: (res) => {
@@ -145,6 +147,12 @@ function FormRegistry(props: IProps) {
   };
 
   useEffect(() => {
+    setFileUpload([
+      {
+        name: detailColumn?.file_name,
+        url: detailColumn?.file_url,
+      },
+    ]);
     if (detailColumn && id) {
       Object.entries(detailColumn).forEach(
         ([fieldName, fieldValue]: [any, any]) => {
@@ -184,7 +192,7 @@ function FormRegistry(props: IProps) {
                   folder={'maneuver'}
                   object_key={'maneuver'}
                   onReceiveImages={(data) => {
-                    if (data.length > 0) setFileUpload(data[0]);
+                    if (data.length > 0) setFileUpload(data);
                   }}
                   fileList={fileUpload}
                 />

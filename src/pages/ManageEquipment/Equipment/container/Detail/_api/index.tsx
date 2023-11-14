@@ -4,6 +4,7 @@ import {
   IFormEquipmentFix,
   IFormEquipmentManeuver,
   IFormInsurance,
+  IFormRecord,
   IFormRegistry,
 } from '../interfaces';
 
@@ -11,6 +12,7 @@ const EquipmentFixUrl = `${endpoint}/eqp/fix`;
 const EquipmentManeuverUrl = `${endpoint}/eqp/project`;
 const EquipmentDocumentUrl = `${endpoint}/eqp/registry`;
 const EquipmentInsuranceUrl = `${endpoint}/eqp/insurance`;
+const EquipmentRecordUrl = `${endpoint}/eqp/brief`;
 
 const EquipmentFixApi = {
   getEquipmentFixList: async ({ params }: any) =>
@@ -61,24 +63,24 @@ const EquipmentManeuverApi = {
       .then((result) => result.data),
 };
 
-const EquipmentDocumentApi = {
-  getEquipmentDocumentList: async ({ params }: any) =>
+const EquipmentRegistryApi = {
+  getEquipmentRegistryList: async ({ params }: any) =>
     await api
       .get(`${EquipmentDocumentUrl}/list`, params)
       .then((result) => result.data),
-  getEquipmentDocumentDetail: async (id: string | number) =>
+  getEquipmentRegistryDetail: async (id: string | number) =>
     await api
       .get(`${EquipmentDocumentUrl}/detail/${id}`)
       .then((result) => result.data?.data),
-  createEquipmentDocument: async (param: IFormRegistry) =>
+  createEquipmentRegistry: async (param: IFormRegistry) =>
     await api
       .post(`${EquipmentDocumentUrl}/create`, param)
       .then((result) => result.data),
-  deleteEquipmentDocument: async (id: string | number) =>
+  deleteEquipmentRegistry: async (id: string | number) =>
     await api
       .delete(`${EquipmentDocumentUrl}/delete/${id}`)
       .then((result) => result.data),
-  updateEquipmentDocument: async (param: IFormRegistry, id: string | number) =>
+  updateEquipmentRegistry: async (param: IFormRegistry, id: string | number) =>
     await api
       .put(`${EquipmentDocumentUrl}/update/${id}`, param)
       .then((result) => result.data),
@@ -110,9 +112,33 @@ const EquipmentInsuranceApi = {
       .then((result) => result.data),
 };
 
+const EquipmentRecordApi = {
+  getEquipmentRecordList: async ({ params }: any) =>
+    await api
+      .get(`${EquipmentRecordUrl}/list`, params)
+      .then((result) => result.data),
+  getEquipmentRecordDetail: async (id: string | number) =>
+    await api
+      .get(`${EquipmentRecordUrl}/detail/${id}`)
+      .then((result) => result.data?.data),
+  createEquipmentRecord: async (param: IFormRecord) =>
+    await api
+      .post(`${EquipmentRecordUrl}/create`, param)
+      .then((result) => result.data),
+  deleteEquipmentRecord: async (id: string | number) =>
+    await api
+      .delete(`${EquipmentRecordUrl}/delete/${id}`)
+      .then((result) => result.data),
+  updateEquipmentRecord: async (param: IFormRecord, id: string | number) =>
+    await api
+      .put(`${EquipmentRecordUrl}/update/${id}`, param)
+      .then((result) => result.data),
+};
+
 export {
   EquipmentFixApi,
   EquipmentManeuverApi,
-  EquipmentDocumentApi,
+  EquipmentRegistryApi,
   EquipmentInsuranceApi,
+  EquipmentRecordApi,
 };

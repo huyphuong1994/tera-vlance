@@ -4,16 +4,16 @@ import { notification, PaginationProps, Table } from 'tera-dls';
 import ActionCUD from '../../../../../../../_common/component/TableColumnCustom/ActionCUD';
 import PaginationCustom from '../../../../../../../_common/component/PaginationCustom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { filterField, formatNumber } from '../../../../../../../_common/utils';
+import { filterField } from '../../../../../../../_common/utils';
 import { messageError } from '../../../../../../../_common/constants/message';
 import { updateURLQuery } from '../../../../../../System/containers/ManagePage/TableConfig/container/Table';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BUTTON_KEY } from '../../../../../../../_common/constants/permission';
-import { EquipmentFixApi } from '../../_api';
+import { EquipmentFixApi, EquipmentRecordApi } from '../../_api';
 import { IFormEquipmentFix, IFormModel } from '../../interfaces';
-import FormFix from '../Form/FormFix';
 import useConfirm from '../../../../../../../_common/hooks/useConfirm';
 import DetailManeuver from '../ModalDetail/DetailManeuver';
+import FormRecord from '../Form/FormRecord';
 
 interface IParams {
   page: number;
@@ -24,6 +24,8 @@ function EquipmentDetailRecords() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const confirm = useConfirm();
+  const { equipmentId } = useParams();
+
   const [formModel, setFormModel] = useState<IFormModel>({ open: false });
   const [openDetail, setOpenDetail] = useState<boolean>(false);
   const [recordDetail, setRecordDetail] = useState<IFormEquipmentFix>();
@@ -37,10 +39,10 @@ function EquipmentDetailRecords() {
   };
 
   const { data, refetch } = useQuery(
-    ['get-table-equipment-fix-list', params],
+    ['get-table-equipment-record-list', params],
     () =>
-      EquipmentFixApi.getEquipmentFixList({
-        params: filterField({ ...params }),
+      EquipmentRecordApi.getEquipmentRecordList({
+        params: filterField({ ...params, machine_id: equipmentId }),
       }),
     {
       staleTime: 300000,
@@ -130,49 +132,31 @@ function EquipmentDetailRecords() {
       render: (_, record) => {
         return (
           <div>
-            <span>Mã thiết bị</span>
-            <span>- Tên thiết bị dự án </span>
-            <span>{record?.project?.name}</span>
+            <div className="flex items-center">
+              <div className="">
+                <ul>
+                  <li>
+                    <span className="text-green-400 text-xxs font-semibold">
+                      [{record?.equipment?.code}]
+                    </span>
+                    <span className="text-xxs">
+                      {' - ' + record?.equipment?.name}
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         );
       },
     },
     {
-      title: 'Nội dung',
-      dataIndex: 'content',
+      title: 'Ghi chú',
+      dataIndex: 'note',
       width: 200,
-    },
-    {
-      title: 'Thời gian',
-      dataIndex: 'fixed_at',
-      width: 200,
-    },
-    {
-      title: 'Đơn vị',
-      dataIndex: 'units',
-      width: 100,
-    },
-    {
-      title: 'Số lượng',
-      dataIndex: 'quantity',
-      width: 100,
-    },
-    {
-      title: 'Đơn giá',
-      dataIndex: 'price',
-      width: 150,
-      render: (text) => formatNumber(text),
-    },
-    {
-      title: 'VAT(%)',
-      dataIndex: 'vat',
-      width: 80,
-    },
-    {
-      title: 'Thành tiền (đ)',
-      dataIndex: 'sum_total',
-      width: 150,
-      render: (text) => formatNumber(text),
+      render: (text) => {
+        return <span className="text-xxs">{text}</span>;
+      },
     },
     {
       title: '',
@@ -218,9 +202,9 @@ function EquipmentDetailRecords() {
           />
         )}
         {formModel.open && (
-          <FormFix
+          <FormRecord
             onRefetch={() =>
-              queryClient.invalidateQueries(['get-table-equipment-fix-list'])
+              queryClient.invalidateQueries(['get-table-equipment-record-list'])
             }
             id={idColumn}
             open={formModel.open}
