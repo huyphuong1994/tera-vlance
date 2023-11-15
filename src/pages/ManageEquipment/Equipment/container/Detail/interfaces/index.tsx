@@ -14,6 +14,8 @@ export interface IFormEquipmentFix {
   units: string;
   price: number;
   content: string;
+  machine?: any;
+  sum_total: number;
 }
 
 export interface IFormEquipmentManeuver {

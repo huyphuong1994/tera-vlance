@@ -4,6 +4,7 @@ import PortalLogApi from '../../../../../../../states/api/history';
 import { messageError } from '../../../../../../../_common/constants/message';
 import { notification } from 'tera-dls';
 import { useState } from 'react';
+import moment from 'moment';
 import { useParams } from 'react-router-dom';
 
 interface IEquipmentDetailProps {
@@ -18,7 +19,7 @@ function EquipmentDetailInfo({ equipmentDetail }: IEquipmentDetailProps) {
   });
 
   const { data } = useQuery(
-    ['get-history-log', { params }],
+    ['get-list-history-log', { params }],
     () => {
       return PortalLogApi.getList({
         params: filterField({ ...params }),
@@ -192,126 +193,42 @@ function EquipmentDetailInfo({ equipmentDetail }: IEquipmentDetailProps) {
             </div>
             <div className="mt-5">
               <ul className="grid gap-5">
-                <li className="grid gap-5">
-                  <div className="flex items-center">
-                    <div>
-                      <span className="text-[10px] text-gray-500 font-semibold">
-                        dd/mm/yyyy
-                      </span>
-                    </div>
-                    <div className="border-b w-full ml-2.5 border-gray-400"></div>
-                  </div>
-                  <div>
-                    <div className="flex items-start">
+                {data &&
+                  data?.data.length > 0 &&
+                  data?.data.map((log: any) => (
+                    <li key={log.id} className="grid gap-5">
+                      <div className="flex items-center">
+                        <div>
+                          <span className="text-[10px] text-gray-500 font-semibold">
+                            {moment(log.created_at).format('DD/MM/YYYY')}
+                          </span>
+                        </div>
+                        <div className="border-b w-full ml-2.5 border-gray-400"></div>
+                      </div>
                       <div>
-                        <span>13:20</span>
+                        <div className="flex items-start">
+                          <div>
+                            <span>
+                              {moment(log.created_at).format('HH:mm')}
+                            </span>
+                          </div>
+                          <div className="ml-3">
+                            <ul className="grid gap-[5px]">
+                              <li className="text-xxs text-green-500 font-semibold">
+                                {log?.created_by?.full_name}
+                              </li>
+                              <li className="text-xxs text-gray-500">
+                                hành động ghi nhận
+                              </li>
+                              <li className="text-xxs text-gray-800">
+                                {log?.content}
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
                       </div>
-                      <div className="ml-3">
-                        <ul className="grid gap-[5px]">
-                          <li className="text-xxs text-green-500 font-semibold">
-                            Nguyễn Văn A
-                          </li>
-                          <li className="text-xxs text-gray-500">
-                            hành động ghi nhận
-                          </li>
-                          <li className="text-xxs text-gray-800">
-                            Mục tiêu được đề cập
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li className="grid gap-5">
-                  <div className="flex items-center">
-                    <div>
-                      <span className="text-[10px] text-gray-500 font-semibold">
-                        dd/mm/yyyy
-                      </span>
-                    </div>
-                    <div className="border-b w-full ml-2.5 border-gray-400"></div>
-                  </div>
-                  <div>
-                    <div className="flex items-start">
-                      <div>
-                        <span>13:20</span>
-                      </div>
-                      <div className="ml-3">
-                        <ul className="grid gap-[5px]">
-                          <li className="text-xxs text-green-500 font-semibold">
-                            Nguyễn Văn A
-                          </li>
-                          <li className="text-xxs text-gray-500">
-                            hành động ghi nhận
-                          </li>
-                          <li className="text-xxs text-gray-800">
-                            Mục tiêu được đề cập
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li className="grid gap-5">
-                  <div className="flex items-center">
-                    <div>
-                      <span className="text-[10px] text-gray-500 font-semibold">
-                        dd/mm/yyyy
-                      </span>
-                    </div>
-                    <div className="border-b w-full ml-2.5 border-gray-400"></div>
-                  </div>
-                  <div>
-                    <div className="flex items-start">
-                      <div>
-                        <span>13:20</span>
-                      </div>
-                      <div className="ml-3">
-                        <ul className="grid gap-[5px]">
-                          <li className="text-xxs text-green-500 font-semibold">
-                            Nguyễn Văn A
-                          </li>
-                          <li className="text-xxs text-gray-500">
-                            hành động ghi nhận
-                          </li>
-                          <li className="text-xxs text-gray-800">
-                            Mục tiêu được đề cập
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li className="grid gap-5">
-                  <div className="flex items-center">
-                    <div>
-                      <span className="text-[10px] text-gray-500 font-semibold">
-                        dd/mm/yyyy
-                      </span>
-                    </div>
-                    <div className="border-b w-full ml-2.5 border-gray-400"></div>
-                  </div>
-                  <div>
-                    <div className="flex items-start">
-                      <div>
-                        <span>13:20</span>
-                      </div>
-                      <div className="ml-3">
-                        <ul className="grid gap-[5px]">
-                          <li className="text-xxs text-green-500 font-semibold">
-                            Nguyễn Văn A
-                          </li>
-                          <li className="text-xxs text-gray-500">
-                            hành động ghi nhận
-                          </li>
-                          <li className="text-xxs text-gray-800">
-                            Mục tiêu được đề cập
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </li>
+                    </li>
+                  ))}
               </ul>
             </div>
           </div>

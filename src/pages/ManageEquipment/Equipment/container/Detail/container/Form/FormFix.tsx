@@ -64,8 +64,8 @@ function FormFix(props: IProps) {
     // watch,
     handleSubmit,
     formState: { errors, isDirty },
-  } = useForm<IFormEquipmentFix>({
-    resolver: yupResolver<IFormEquipmentFix>(schema),
+  } = useForm({
+    resolver: yupResolver(schema),
     mode: 'onChange',
     defaultValues: {
       equipment_id: +equipmentId,
